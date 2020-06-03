@@ -1,8 +1,8 @@
 import jwt
 
-from excel.models               import Account
+from .models import Account
 from kmap_info_back.my_settings import ALGORITHM, SECRET_KEY
-from django.http                import JsonResponse
+from django.http                import JsonResponse , HttpResponse
 
 
 def login_check(func):
@@ -19,7 +19,7 @@ def login_check(func):
 
             return func(self, request, *args, **kwargs)
 
-        except User.DoesNotExist:
+        except Account.DoesNotExist:
             return HttpResponse(status=400)
 
         except KeyError:

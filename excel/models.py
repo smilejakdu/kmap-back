@@ -4,7 +4,17 @@ from django.db import models
 
 #Plate_No Replicate_No Well_No Index_No KaiChem_ID Conc_nM Cell Time RNA_Ext_Date Lib_Prep_Date
 
-class GeneData(models.Model):
+
+class ExcelName(models.Model):
+    name = models.CharField(max_length = 250)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = "excel_names"
+
+class ExcelSheet(models.Model):
     Plate_No      = models.IntegerField(null=True)
     Replicate_No  = models.IntegerField(null=True)
     Well_No       = models.IntegerField(null=True)
@@ -21,5 +31,7 @@ class GeneData(models.Model):
 
     class Meta:
         db_table = "gene_datas"
+
+
 
 
