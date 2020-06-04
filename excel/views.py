@@ -1,61 +1,65 @@
 import json
-from .models         import ExcelName , ExcelSheet
+from .models         import ExcelTable ,SheetTable
 from account.utils   import login_check
 from django.views    import View
 from django.http     import HttpResponse, JsonResponse
 
 from openpyxl import load_workbook
 import xlrd
-import re
 
-''' 
-1 )
-
-excel_name 테이블에 엑셀을 저장한다 .
-
-id | name |
-1 | Data_gen_data | 
-
-===========================
-
-sheet_name 테이블에 시트 저장
-
-id | plate_no | replicate_no | well_no | excel_name_id |
-1  | 20200506 |    1         | A07     |      1        |
-
-질문 ) sheet 이름도 저장을 해야하는지 
-
-'''
 
 class ExcelView(View):
     def post(self , request):
         data      = request.FILES["file"]
         sheetList = []
+        excel_name = str(data)
+
 
         try :
             if not data.name.endswith(".xlsx"):
                 return JsonResponse({"message": "NOT_EXCEL_FILE"}, status=400)
 
+            if ExcelTable.objects.filter(name = excel_name):
+                return JsonResponse({"message" : "EXISTS_EXCEL"}, status=400)
+
+            ExcelTable(
+                name = excel_name
+            ).save()
+
             wb = load_workbook(data , data_only=True)
-            for i in wb.sheetnames:
-                sheetList.append(i)
+            [sheetList.append(i) for i in wb.sheetnames]
 
             for sheet in sheetList:
-                print(sheet)
-                sheet_row = wb[sheet]
+                sheet_row  = wb[sheet]
                 all_values = []
 
                 for row in sheet_row.rows:
                     row_value = []
-                    for cell in row:
-                        row_value.append(cell.value)
+                    [row_value.append(cell.value) for cell in row]
                     all_values.append(row_value)
 
-                for n,v in enumerate(all_values):
-                    if not n ==0:
-                        print(v)
+                for num , values in enumerate(all_values):
+                    if not num ==0:
 
-            return HttpResponse(status=200)
+
+                        SheetTable.objects.create(
+                            sheet_name    = sheet,
+                            Plate_No      = values[0],
+                            Replicate_No  = values[1],
+                            Well_No       = values[2],
+                            Index_No      = values[3],
+                            KaiChem_ID    = values[4],
+                            Conc_nM       = values[5],
+                            Cell          = values[6],
+                            Time          = values[7],
+                            RNA_Ext_Date  = values[8],
+                            Lib_Prep_Date = values[9],
+                            Seq_Req_Date  = values[10],
+                            NGS_Data_Date = values[11],
+                            excel_name_id = ExcelTable.objects.get(name = excel_name).id
+                        )
+
+            return HttpResponse(status = 200)
 
         except KeyError:
             return JsonResponse({"message" : "INVALID_KEY"},status=400)
