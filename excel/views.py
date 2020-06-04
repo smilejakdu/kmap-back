@@ -41,8 +41,8 @@ class ExcelView(View):
                 sheetList.append(i)
 
             for sheet in sheetList:
+                print(sheet)
                 sheet_row = wb[sheet]
-                print(sheet_row)
                 all_values = []
 
                 for row in sheet_row.rows:

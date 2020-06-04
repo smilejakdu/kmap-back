@@ -12,6 +12,7 @@ class ExcelName(models.Model):
         db_table = "excel_names"
 
 class ExcelSheet(models.Model):
+    sheet_name    = models.CharField(max_length=250 , null=True)
     Plate_No      = models.IntegerField(null=True)
     Replicate_No  = models.IntegerField(null=True)
     Well_No       = models.IntegerField(null=True)
