@@ -25,7 +25,7 @@ class SignUpView(View):
                     password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
                 ).save()
                 return HttpResponse(status=200)
-                 
+
         except ValidationError:
             return HttpResponse(status=400)
 
