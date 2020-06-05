@@ -1,17 +1,20 @@
 from django.db import models
 
 
-class ExcelTable(models.Model):
+class Excel(models.Model):
     name = models.CharField(max_length = 250)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        db_table = "excel_tables"
+        db_table = "excels"
 
-class SheetTable(models.Model):
-    sheet_name    = models.CharField(max_length=250 , null=True)
+class ExcelTest(models.Model):
+    file_name = models.FileField(upload_to=Excel)
+
+class Sheet(models.Model):
+    name    = models.CharField(max_length=250 , null=True)
     Plate_No      = models.IntegerField(null=True)
     Replicate_No  = models.IntegerField(null=True)
     Well_No       = models.CharField(max_length=250 , null=True)
@@ -24,11 +27,11 @@ class SheetTable(models.Model):
     Lib_Prep_Date = models.IntegerField(default=0)
     Seq_Req_Date  = models.IntegerField(default=0)
     NGS_Data_Date = models.IntegerField(default=0)
-    excel_name    = models.ForeignKey("ExcelTable" , on_delete = models.CASCADE , null = True)
+    excel_name    = models.ForeignKey("Excel" , on_delete = models.CASCADE , null = True)
 
     def __str__(self):
         return self.KaiChem_ID
 
     class Meta:
-        db_table = "sheet_tables"
+        db_table = "sheets"
 
