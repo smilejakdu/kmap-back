@@ -3,15 +3,13 @@ from django.db import models
 
 class Excel(models.Model):
     name = models.CharField(max_length = 250)
+    create_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
         db_table = "excels"
-
-class ExcelTest(models.Model):
-    file_name = models.FileField(upload_to=Excel)
 
 class Sheet(models.Model):
     name    = models.CharField(max_length=250 , null=True)
