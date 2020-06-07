@@ -102,16 +102,51 @@ class ExcelDetailView(View):
     # excel.sheet_set.all().values() ==> 시트내용 출력
     # excel = Excel.objects.prefetch_related("sheet_set").get(id=1)
     # excel.sheet_set.all().values("name").distinct()
-    def get(self, request , excel_name):
-        print("excel_name" , excel_name)
+    def get(self, request , excel_name): # 엑셀을 클릭하면 sheet 출력
 
-        if not Excel.objects.filter(name = excel_name).exists():
-            return JsonResponse({"message" :"DOESNOT_EXCEL"},status=400)
+        if not Excel.objects.filter(name=excel_name).exists():
+            return JsonResponse({"message": "DOESNOT_EXCEL"}, status=400)
+
+        try:
+            sheet_name = (Excel.
+                          objects.
+                          get(name=excel_name).
+                          sheet_set.
+                          values("name").
+                          distinct())
+
+            return JsonResponse({"sheet_data" : list(sheet_name)} , status=200)
+
+        except KeyError :
+            return HttpResponse(status=200)
+
+        except TypeError:
+            return HttpResponse(status=200)
+
+class SheetDetailView(View): # Sheet 데이터 출력
+    def get(self , request, excel_name , sheet_name):
+        print(excel_name)
+        print(sheet_name)
+        if not Excel.objects.filter(id=excel_name).exists():
+            return JsonResponse({"message":"DOESNOT_EXCEL"} , status=400)
+
+        if not Sheet.objects.filter(name = sheet_name).exists():
+            return JsonResponse({"message":"DOESNOT_SHEET"} , status=400)
 
         try :
-            print("엑셀디테일")
-        except :
-            return
+            excel_id = Excel.objects.get(name=excel_name).id
+            sheet_data = (Sheet.
+                          objects.
+                          filter(excel_name_id=excel_id , name = sheet_name).
+                          values())
 
-        return
+            return JsonResponse({"data" : list(sheet_data)} , status=200)
 
+        except KeyError:
+            return HttpResponse(status=400)
+
+        except TypeError:
+            return HttpResponse(status=400)
+
+        except Exception as e:
+            return JsonResponse({"message":e},status=400)
