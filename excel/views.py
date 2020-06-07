@@ -125,9 +125,7 @@ class ExcelDetailView(View):
 
 class SheetDetailView(View): # Sheet 데이터 출력
     def get(self , request, excel_name , sheet_name):
-        print(excel_name)
-        print(sheet_name)
-        if not Excel.objects.filter(id=excel_name).exists():
+        if not Excel.objects.filter(name=excel_name).exists():
             return JsonResponse({"message":"DOESNOT_EXCEL"} , status=400)
 
         if not Sheet.objects.filter(name = sheet_name).exists():
@@ -138,9 +136,37 @@ class SheetDetailView(View): # Sheet 데이터 출력
             sheet_data = (Sheet.
                           objects.
                           filter(excel_name_id=excel_id , name = sheet_name).
-                          values())
+                          values("Plate_No",
+                                 "Replicate_No",
+                                 "Well_No",
+                                 "Index_No",
+                                 "KaiChem_ID",
+                                 "Conc_nM",
+                                 "Cell",
+                                 "Time",
+                                 "RNA_Ext_Date",
+                                 "Lib_Prep_Date",
+                                 "Seq_Req_Date",
+                                 "NGS_Data_Date",
+                                 ))
 
-            return JsonResponse({"data" : list(sheet_data)} , status=200)
+            cols = []
+            cols_dict= []
+            cols.append("id")
+            [cols.append(sheet) for sheet in sheet_data[0]]
+            [cols_dict.append({"name":cols[num],"key":num}) for num in range(0 , len(cols))]
+
+            rows = []
+            for num in range(0 , len(sheet_data)):
+                row = []
+                for sheet in sheet_data[num].values():
+                    row.append(sheet)
+                rows.append(row)
+
+            return JsonResponse({"sheet_table": {
+                                        "cols": cols_dict,
+                                        "rows": rows,
+                                    }}, status=200)
 
         except KeyError:
             return HttpResponse(status=400)
