@@ -159,8 +159,7 @@ class SheetDetailView(View): # Sheet 데이터 출력
             rows = []
             for num in range(0 , len(sheet_data)):
                 row = []
-                for sheet in sheet_data[num].values():
-                    row.append(sheet)
+                [row.append(sheet) for sheet in sheet_data[num].values()]
                 rows.append(row)
 
             return JsonResponse({"sheet_table": {
