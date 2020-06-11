@@ -8,7 +8,7 @@
 .envrc
 .idea/
 .my_settings
-
+my_settings.py
 ### Django ###
 *.log
 *.pot
@@ -246,4 +246,4 @@ pip-selfcheck.json
 text.py
 tokens.py
 # settings
-my_settings.py
+
