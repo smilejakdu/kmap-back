@@ -4,8 +4,7 @@ from .views      import (ExcelView ,
                          SheetDetailView)
 
 urlpatterns = [
-    path("upload" , ExcelView.as_view()),
-    path("<str:excel_name>" , ExcelDetailView.as_view()),
+    path("upload"                            , ExcelView.as_view()),
+    path("<str:excel_name>"                  , ExcelDetailView.as_view()),
     path("<str:excel_name>/<str:sheet_name>" , SheetDetailView.as_view()),
-    
 ]

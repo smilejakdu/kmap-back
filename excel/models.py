@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Excel(models.Model):
-    name = models.CharField(max_length = 250)
+    name      = models.CharField(max_length = 250)
     create_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
@@ -12,7 +12,7 @@ class Excel(models.Model):
         db_table = "excels"
 
 class Sheet(models.Model):
-    name    = models.CharField(max_length=250 , null=True)
+    name          = models.CharField(max_length=250 , null=True)
     Plate_No      = models.IntegerField(null=True)
     Replicate_No  = models.IntegerField(null=True)
     Well_No       = models.CharField(max_length=250 , null=True)

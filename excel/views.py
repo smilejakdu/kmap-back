@@ -3,7 +3,7 @@ from .models         import Excel ,Sheet
 from account.utils   import login_check
 from django.views    import View
 from django.http     import HttpResponse, JsonResponse
-from openpyxl import load_workbook
+from openpyxl        import load_workbook
 import xlrd
 
 
@@ -82,26 +82,20 @@ class ExcelView(View):
             excel_count = Excel.objects.count()
 
             return JsonResponse({"data": {
-                "excel_data": list(excel_data),
-                "excel_count": excel_count
+                "excel_data"  : list(excel_data),
+                "excel_count" : excel_count
             }}, status=200)
 
         except KeyError:
-            return JsonResponse({"message","INVALID_KEY"},status=400)
+            return JsonResponse({"message","INVALID_KEY"} , status=400)
 
         except TypeError:
-            return JsonResponse({"message":"INVALID_TYPE"}, status=400)
+            return JsonResponse({"message":"INVALID_TYPE"} , status=400)
 
         except Excel.DoesNotExist:
             return JsonResponse({"message":"DOESNOT_EXCEL"},status=400)
 
 class ExcelDetailView(View):
-    # Excel.objects.get(id=1).sheet_set.values("Well_No")
-    # excel = Excel.objects.prefetch_related("sheet_set").get(id=1)
-    # excel.name ==> 엑셀이름 출력
-    # excel.sheet_set.all().values() ==> 시트내용 출력
-    # excel = Excel.objects.prefetch_related("sheet_set").get(id=1)
-    # excel.sheet_set.all().values("name").distinct()
     def get(self, request , excel_name): # 엑셀을 클릭하면 sheet 출력
 
         if not Excel.objects.filter(name=excel_name).exists():
@@ -118,10 +112,10 @@ class ExcelDetailView(View):
             return JsonResponse({"sheet_data" : list(sheet_name)} , status=200)
 
         except KeyError :
-            return HttpResponse(status=200)
+            return HttpResponse(status=400)
 
         except TypeError:
-            return HttpResponse(status=200)
+            return HttpResponse(status=400)
 
 class SheetDetailView(View): # Sheet 데이터 출력
     def get(self , request, excel_name , sheet_name):
