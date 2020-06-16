@@ -62,9 +62,9 @@ class ExcelView(View):
         except KeyError:
             return JsonResponse({"message" : "INVALID_KEY"},status=400)
 
-    def get(self , request): # 엑셀 만 보여주면 됨
+    def get(self , request): 
         try:
-            query = request.GET.get('keyword', None)  # 엑셀 데이터 검색
+            query = request.GET.get('keyword', None)  
 
             if query:
                 excel_search = Excel.objects.filter(name__icontains = query).all()
@@ -96,7 +96,7 @@ class ExcelView(View):
             return JsonResponse({"message":"DOESNOT_EXCEL"},status=400)
 
 class ExcelDetailView(View):
-    def get(self, request , excel_name): # 엑셀을 클릭하면 sheet 출력
+    def get(self, request , excel_name): 
 
         if not Excel.objects.filter(name=excel_name).exists():
             return JsonResponse({"message": "DOESNOT_EXCEL"}, status=400)
@@ -117,7 +117,7 @@ class ExcelDetailView(View):
         except TypeError:
             return HttpResponse(status=400)
 
-class SheetDetailView(View): # Sheet 데이터 출력
+class SheetDetailView(View): 
     def get(self , request, excel_name , sheet_name):
         if not Excel.objects.filter(name=excel_name).exists():
             return JsonResponse({"message":"DOESNOT_EXCEL"} , status=400)
