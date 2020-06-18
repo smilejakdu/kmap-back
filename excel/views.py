@@ -95,6 +95,7 @@ class ExcelView(View):
         except Excel.DoesNotExist:
             return JsonResponse({"message":"DOESNOT_EXCEL"},status=400)
 
+
 class ExcelDetailView(View):
     def get(self, request , excel_name): 
 
@@ -117,7 +118,28 @@ class ExcelDetailView(View):
         except TypeError:
             return HttpResponse(status=400)
 
-class SheetDetailView(View): 
+    def delete(self, request , excel_name):
+
+        if not Excel.objects.filter(name=excel_name).exists():
+            return JsonResponse({"message", "DOESNOT_EXCEL"} , status=400)
+
+        try:
+            excel_name = Excel.objects.get(name = excel_name)
+            print(excel_name)
+            excel_name.delete()
+            excel_name.save()
+
+        except ValueError:
+            return JsonResponse({"message" , "INVALID_VALUE"} , status=400)
+
+        except KeyError:
+            return JsonResponse({"message","INVALID_KEY"},status=400)
+
+        except Exception as e:
+            return JsonResponse({"message",e},status=400)
+
+
+class SheetDetailView(View):
     def get(self , request, excel_name , sheet_name):
         if not Excel.objects.filter(name=excel_name).exists():
             return JsonResponse({"message":"DOESNOT_EXCEL"} , status=400)
