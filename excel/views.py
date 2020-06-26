@@ -2,10 +2,11 @@ import json
 from .models         import Excel ,Sheet
 from account.utils   import login_check
 from django.views    import View
+from django.db.models import Count
 from django.http     import HttpResponse, JsonResponse
 from openpyxl        import load_workbook
 import xlrd
-
+from datetime import datetime
 
 class ExcelView(View):
     def post(self , request):
@@ -130,6 +131,8 @@ class ExcelDetailView(View):
             excel_name.delete()
             excel_name.save()
 
+            return HttpResponse(status=200)
+
         except ValueError:
             return JsonResponse({"message" , "INVALID_VALUE"} , status=400)
 
@@ -165,7 +168,7 @@ class SheetDetailView(View):
                                  "RAN_Extraction_Date",
                                  "Library_Prep_Date",
                                  "Seq_Request_Date",
-                                 "NGS_Data_Date",
+                                 "NGS_Data_Date"
                                  ))
 
             cols = []
@@ -193,3 +196,25 @@ class SheetDetailView(View):
 
         except Exception as e:
             return JsonResponse({"message":e},status=400)
+
+class StatisticsPage(View):
+    def get(self , request):
+
+        try :
+            # circle info
+            kaichem_number = Sheet.objects.values("KaiChem_ID").distinct().count() # KaiChem_ID 의 수
+            circle_number  = kaichem_number * 100 // 1366
+            # profiles per month
+            profiles_per_month = Sheet.objects.values("NGS_Data_Date")
+            year  = datetime.now().year
+            month = datetime.now().month
+
+            return JsonResponse({"data":{
+                                    "kaichem_number": kaichem_number,
+                                    "circle_number" : circle_number,
+                                    }} , status=200)
+        except KeyError :
+            return HttpResponse(status=400)
+
+        except Exception as e :
+            return JsonResponse({"message" : e} , status=400)
