@@ -17,8 +17,9 @@ class ExcelView(View):
         try :
             if not data.name.endswith(".xlsx"):
                 return JsonResponse({"message": "NOT_EXCEL_FILE"}, status=400)
-
+            print("excel_name: ",excel_name);
             if Excel.objects.filter(name = excel_name).exists():
+                print("엑셀에러")
                 return JsonResponse({"message" : "EXISTS_EXCEL"}, status=400)
 
             Excel(
@@ -153,6 +154,7 @@ class SheetDetailView(View):
 
         try :
             excel_id = Excel.objects.get(name=excel_name).id
+            print("excel_id: " ,excel_id)
             sheet_data = (Sheet.
                           objects.
                           filter(excel_name_id=excel_id , name = sheet_name).
@@ -165,12 +167,12 @@ class SheetDetailView(View):
                                  "Well_Location",
                                  "Index_No",
                                  "Seeding_Date",
-                                 "RAN_Extraction_Date",
+                                 "RNA_Extraction_Date",
                                  "Library_Prep_Date",
                                  "Seq_Request_Date",
                                  "NGS_Data_Date"
                                  ))
-
+            print("123123")
             cols = []
             cols_dict= []
             cols.append("id")

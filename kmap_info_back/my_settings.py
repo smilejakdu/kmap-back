@@ -1,4 +1,3 @@
-
 DATABASES = {
     'default': {
         'ENGINE'   : 'django.db.backends.mysql',
@@ -7,13 +6,14 @@ DATABASES = {
         'USER'     : 'kmapinfo',  # 유저 이름
         'PASSWORD' : 'kmapinfo@!',  # 패스워드
         'PORT'     : '3307',
-        'OPTIONS': {'charset': 'utf8mb4'},
-        'TEST': {
-            'CHARSET': 'utf8mb4',
+        'OPTIONS'  : {'charset': 'utf8mb4'},
+        'TEST'     : 
+            {
+            'CHARSET'  : 'utf8mb4',
             'COLLATION': 'utf8mb4_general_ci',
+            }
         }
     }
-}
 
 ALGORITHM = 'HS256'
 
