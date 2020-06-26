@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'excel',
     'account',
+    'compound',
 ]
 
 MIDDLEWARE = [

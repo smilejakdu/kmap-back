@@ -12,23 +12,24 @@ class Excel(models.Model):
         db_table = "excels"
 
 class Sheet(models.Model):
-    name          = models.CharField(max_length=250 , null=True)
-    Plate_No      = models.IntegerField(null=True)
-    Replicate_No  = models.IntegerField(null=True)
-    Well_No       = models.CharField(max_length=250 , null=True)
-    Index_No      = models.IntegerField(default = 0)
-    KaiChem_ID    = models.CharField(max_length=250, null = True , verbose_name="카이참")
-    Conc_nM       = models.IntegerField(default=0)
-    Cell          = models.CharField(max_length=250, null = True , verbose_name="세포")
-    Time          = models.IntegerField(default=0)
-    RNA_Ext_Date  = models.IntegerField(default=0)
-    Lib_Prep_Date = models.IntegerField(default=0)
-    Seq_Req_Date  = models.IntegerField(default=0)
-    NGS_Data_Date = models.IntegerField(default=0)
-    excel_name    = models.ForeignKey("Excel" , on_delete = models.CASCADE , null = True)
+    name                = models.CharField(max_length=250 , null=True)
+    Subset              = models.CharField(max_length = 250 , null = True)
+    Concentration_nM    = models.IntegerField(null    = True)
+    Replicate_No        = models.CharField(max_length  = 250 , null = True)
+    KaiChem_ID          = models.CharField(max_length = 250 , null = True)
+    Cell                = models.CharField(max_length = 250 , null = True)
+    Treat_Time          = models.CharField(max_length = 250 , null = True)
+    Well_Location       = models.CharField(max_length = 250 , null = True)
+    Index_No            = models.CharField(max_length = 250 , null = True)
+    Seeding_Date        = models.IntegerField(null = True)
+    RNA_Extraction_Date = models.IntegerField(null = True)
+    Library_Prep_Date   = models.IntegerField(null = True)
+    Seq_Request_Date    = models.IntegerField(null = True)
+    NGS_Data_Date       = models.IntegerField(null = True)
+    excel_name          = models.ForeignKey("Excel" , on_delete=models.CASCADE , null=True)
 
     def __str__(self):
-        return self.KaiChem_ID
+        return self.name
 
     class Meta:
         db_table = "sheets"

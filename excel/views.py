@@ -41,20 +41,21 @@ class ExcelView(View):
 
 
                         Sheet.objects.create(
-                            name          = sheet,
-                            Plate_No      = values[0],
-                            Replicate_No  = values[1],
-                            Well_No       = values[2],
-                            Index_No      = values[3],
-                            KaiChem_ID    = values[4],
-                            Conc_nM       = values[5],
-                            Cell          = values[6],
-                            Time          = values[7],
-                            RNA_Ext_Date  = values[8],
-                            Lib_Prep_Date = values[9],
-                            Seq_Req_Date  = values[10],
-                            NGS_Data_Date = values[11],
-                            excel_name_id = Excel.objects.get(name = excel_name).id
+                            name                = sheet,
+                            Subset              = values[0],
+                            Concentration_nM    = values[1],
+                            Replicate_No        = values[2],
+                            KaiChem_ID          = values[3],
+                            Cell                = values[4],
+                            Treat_Time          = values[5],
+                            Well_Location       = values[6],
+                            Index_No            = values[7],
+                            Seeding_Date        = values[8],
+                            RNA_Extraction_Date = values[9],
+                            Library_Prep_Date   = values[10],
+                            Seq_Request_Date    = values[11],
+                            NGS_Data_Date       = values[12],
+                            excel_name_id       = Excel.objects.get(name = excel_name).id
                         )
 
             return HttpResponse(status = 200)
@@ -62,9 +63,9 @@ class ExcelView(View):
         except KeyError:
             return JsonResponse({"message" : "INVALID_KEY"},status=400)
 
-    def get(self , request): 
+    def get(self , request):
         try:
-            query = request.GET.get('keyword', None)  
+            query = request.GET.get('keyword', None)
 
             if query:
                 excel_search = Excel.objects.filter(name__icontains = query).all()
@@ -152,17 +153,18 @@ class SheetDetailView(View):
             sheet_data = (Sheet.
                           objects.
                           filter(excel_name_id=excel_id , name = sheet_name).
-                          values("Plate_No",
+                          values("Subset",
+                                 "Concentration_nM",
                                  "Replicate_No",
-                                 "Well_No",
-                                 "Index_No",
                                  "KaiChem_ID",
-                                 "Conc_nM",
                                  "Cell",
-                                 "Time",
-                                 "RNA_Ext_Date",
-                                 "Lib_Prep_Date",
-                                 "Seq_Req_Date",
+                                 "Treat_Time",
+                                 "Well_Location",
+                                 "Index_No",
+                                 "Seeding_Date",
+                                 "RAN_Extraction_Date",
+                                 "Library_Prep_Date",
+                                 "Seq_Request_Date",
                                  "NGS_Data_Date",
                                  ))
 
