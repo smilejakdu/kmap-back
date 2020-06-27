@@ -40,7 +40,7 @@ class LoginView(View):
         try:
 
             if Account.objects.filter(user_id=data['user_id']).exists():
-                user = Account.objects.get(email=data['email'])
+                user = Account.objects.get(user_id=data['user_id'])
 
                 if bcrypt.checkpw(data['password'].encode('utf-8'),
                                   user.password.encode('utf-8')):
