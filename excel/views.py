@@ -224,16 +224,36 @@ class StatisticsPage(View):
                 elif str(p["NGS_Data_Date"])[:6] == previous_day_two:
                     previous_day_two_list.append(str(p["NGS_Data_Date"]))
             # Total KMAP-2K Profile Numbers
-            # 딕셔너리로 줘야하나 ??
             columns_list = [
                 {"name" : f"{previous_day_two[4:]}월" , "value" : len(previous_day_two_list)},
                 {"name" : f"{previous_day_one[4:]}월" , "value" : len(previous_day_one_list)},
-                {"name" : f"{now_day[4:]}월"          ,"value":len(now_list)}]
+                {"name" : f"{now_day[4:]}월"          , "value" : len(now_list)}]
+
+            # svg_data
+            num = 0
+            svg_data_list = []
+            while True :
+                print(str(now + dateutil.relativedelta.relativedelta(months = num)).split()[0].replace("-", "")[:6])
+                date  = str(now + dateutil.relativedelta.relativedelta(months = num)).split()[0].replace("-", "")[:6] # 202006
+                year  = date[:4]
+                month = date[4:]
+                if int(month) < 10:
+                    month = date[5:6]
+                if Sheet.objects.filter(create_at__year__lte  = year ,
+                                        create_at__month__lte = month).count() == 0: # 16
+                    break
+                svg_data_list.append({"name"  : f"{date}",
+                                      "value" : Sheet.
+                                      objects.
+                                      filter(create_at__year__lte  = year ,
+                                             create_at__month__lte = month).count()})
+                num = num -1
 
             return JsonResponse({"data": {
                 "kaichem_number" : kaichem_number,
                 "circle_number"  : circle_number,
                 "columns_list"   : columns_list,
+                "svg_data_list"  : svg_data_list,
             }}, status=200)
 
         except KeyError:
