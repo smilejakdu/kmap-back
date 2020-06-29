@@ -218,8 +218,6 @@ class StatisticsPage(View):
 
             profiles_per_month = Sheet.objects.values("NGS_Data_Date")
             for p in profiles_per_month:
-                print(p , type(p))
-                print(p["NGS_Data_Date"][:6]) # 202005
                 if str(p["NGS_Data_Date"])[:6] == now_day:
                     now_list.append(str(p["NGS_Data_Date"]))
                 elif str(p["NGS_Data_Date"])[:6] == previous_day_one:
