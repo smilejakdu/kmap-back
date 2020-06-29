@@ -224,16 +224,16 @@ class StatisticsPage(View):
                 elif str(p["NGS_Data_Date"])[:6] == previous_day_two:
                     previous_day_two_list.append(str(p["NGS_Data_Date"]))
             # Total KMAP-2K Profile Numbers
-            print(Sheet.objects.get(id=125).create_at.strftime("%Y%m"))
+            # 딕셔너리로 줘야하나 ??
+            columns_list = [
+                {"name" : now_day,"value":len(now_list)},
+                {"name" : previous_day_one , "value" : len(previous_day_one_list)},
+                {"name" : previous_day_two , "value" : len(previous_day_two_list)}]
+
             return JsonResponse({"data": {
-                "kaichem_number"         : kaichem_number,
-                "circle_number"          : circle_number,
-                "now_day"                : now_day,
-                "now_day_count"          : len(now_list),
-                "previous_day_one"       : previous_day_one,
-                "previous_day_one_count" : len(previous_day_one_list),
-                "previous_day_two"       : previous_day_two,
-                "previous_day_two_count" : len(previous_day_two_list),
+                "kaichem_number" : kaichem_number,
+                "circle_number"  : circle_number,
+                "columns_list"   : columns_list,
             }}, status=200)
 
         except KeyError:
