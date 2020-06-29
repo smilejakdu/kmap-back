@@ -226,9 +226,9 @@ class StatisticsPage(View):
             # Total KMAP-2K Profile Numbers
             # 딕셔너리로 줘야하나 ??
             columns_list = [
-                {"name" : previous_day_two[4:] , "value" : len(previous_day_two_list)},
-                {"name" : previous_day_one[4:] , "value" : len(previous_day_one_list)},
-                {"name" : now_day[4:]          ,"value":len(now_list)}]
+                {"name" : f"{previous_day_two[4:]}월" , "value" : len(previous_day_two_list)},
+                {"name" : f"{previous_day_one[4:]}월" , "value" : len(previous_day_one_list)},
+                {"name" : f"{now_day[4:]}월"          ,"value":len(now_list)}]
 
             return JsonResponse({"data": {
                 "kaichem_number" : kaichem_number,
