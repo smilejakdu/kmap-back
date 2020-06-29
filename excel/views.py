@@ -226,11 +226,11 @@ class StatisticsPage(View):
             # Total KMAP-2K Profile Numbers
             print(Sheet.objects.get(id=125).create_at.strftime("%Y%m"))
             return JsonResponse({"data": {
-                "kaichem_number"        : kaichem_number,
-                "circle_number"         : circle_number,
-                "now_day"            : len(now_list),
-                "previous_day_one" : len(previous_day_one_list),
-                "previous_day_two" : len(previous_day_two_list),
+                "kaichem_number"      : kaichem_number,
+                "circle_number"       : circle_number,
+                f"{now_day}"          : len(now_list),
+                f"{previous_day_one}" : len(previous_day_one_list),
+                f"{previous_day_two}" : len(previous_day_two_list),
             }}, status=200)
 
         except KeyError:
