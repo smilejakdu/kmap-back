@@ -227,12 +227,12 @@ class StatisticsPage(View):
                     previous_day_two_list.append(str(p["NGS_Data_Date"]))
             # Total KMAP-2K Profile Numbers
 
-
-
-
             return JsonResponse({"data": {
-                "kaichem_number": kaichem_number,
-                "circle_number": circle_number,
+                "kaichem_number"        : kaichem_number,
+                "circle_number"         : circle_number,
+                "now_list"              : len(now_list),
+                "previous_day_one_list" : len(previous_day_one_list),
+                "previous_day_two_list" : len(previous_day_two_list),
             }}, status=200)
 
         except KeyError:

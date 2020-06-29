@@ -27,6 +27,7 @@ class Sheet(models.Model):
     Seq_Request_Date    = models.IntegerField(null = True)
     NGS_Data_Date       = models.IntegerField(null = True)
     excel_name          = models.ForeignKey("Excel" , on_delete=models.CASCADE , null=True)
+    create_at           = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
