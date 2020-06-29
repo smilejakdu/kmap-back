@@ -1,6 +1,5 @@
 import json
 from .models import Excel, Sheet
-from account.utils import login_check
 from django.views import View
 from django.db.models import Count
 from django.http import HttpResponse, JsonResponse
@@ -225,8 +224,7 @@ class StatisticsPage(View):
                 elif str(p["NGS_Data_Date"])[:6] == previous_day_two:
                     previous_day_two_list.append(str(p["NGS_Data_Date"]))
             # Total KMAP-2K Profile Numbers
-            print(Sheet.objects.get(id=125).values("create_at"))
-
+            print(Sheet.objects.get(id=125).create_at.strftime("%Y%m"))
             return JsonResponse({"data": {
                 "kaichem_number"        : kaichem_number,
                 "circle_number"         : circle_number,
