@@ -32,7 +32,7 @@ class CompoundView(View):
                                     "known_target",
                                     "information"))
 
-            return JsonResponse({"data" : list(compound_info)} , status=200)
+            return JsonResponse({"data" : compound_info} , status=200)
 
         except Compound.DoesNotExist:
             return JsonResponse({"message" : "DOES_NOT_COMPOUND"} , status=400)
