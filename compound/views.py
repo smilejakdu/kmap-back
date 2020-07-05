@@ -72,10 +72,10 @@ class SearchView(View):
                                         "known_target",
                                         "information"))
 
-                return JsonResponse({"data" : list(compound_data)},status = 400)
+                return JsonResponse({"data" : list(compound_data)},status = 200)
 
         except Exception as e :
             return JsonResponse({"message" : e}, status = 400)
 
-        return TypeError:
-            return JsonResponse({"message" : "INVALID_TYPE"},status = 200)
+        except TypeError:
+            return JsonResponse({"message" : "INVALID_TYPE"},status = 400)
