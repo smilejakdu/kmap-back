@@ -52,7 +52,7 @@ class SearchView(View):
             if len(search) > 0:
                 compound_data = (Compound.
                                  objects.
-                                 filter(compound__icontains = query).
+                                 filter(compound__icontains = search).
                                  values("subset",
                                         "japan",
                                         "europe",
