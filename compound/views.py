@@ -5,25 +5,23 @@ from .models      import Compound
 
 class CompoundView(View):
     def get(self , request , kaipharm_chem_id):
-        print(kaipharm_chem_id)
+
+        if not Compound.objects.filter(id = kaipharm_chem_id).exists():
+            return JsonResponse({"message" : "does_not_compound"},status=400)
+
         try :
-            if Compound.objects.filter(id = kaipharm_chem_id).exists():
-                compound_info = (Compound.
-                                 objects.
-                                 filter(id = kaipharm_chem_id).
-                                 values())
+            compound_info = (Compound.
+                             objects.
+                             filter(id = kaipharm_chem_id).
+                             values())
 
-                return JsonResponse({"data" : list(compound_info)} , status=200)
-
-        except Compound.DoesNotExist:
-            return JsonResponse({"message" : "DOES_NOT_COMPOUND"} , status=400)
+            return JsonResponse({"data" : list(compound_info)} , status=200)
 
         except TypeError:
             return JsonResponse({"message" : "INVALID_TYPE"}, status=400)
 
         except Exception as e:
             return JsonResponse({"message" : e} , status=400)
-
 
 class SearchView(View):
     def get(self, request):
@@ -43,7 +41,6 @@ class SearchView(View):
 
         except Exception as e :
             return JsonResponse({"message" : e}, status = 400)
-
 
 class CompoundNameView(View):
     def get(self , request , name):
