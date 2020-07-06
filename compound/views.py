@@ -11,24 +11,7 @@ class CompoundView(View):
                 compound_info = (Compound.
                                  objects.
                                  filter(id = kaipharm_chem_id).
-                                 values("subset",
-                                        "japan",
-                                        "europe",
-                                        "usa",
-                                        "nci_cancer",
-                                        "kaichem_id",
-                                        "kaipharm_chem_index",
-                                        "chem_series",
-                                        "chem_series_cid",
-                                        "compound",
-                                        "cid",
-                                        "inchikey",
-                                        "pubchem_name",
-                                        "ipk",
-                                        "prestwick",
-                                        "selleckchem",
-                                        "known_target",
-                                        "information"))
+                                 values())
 
                 return JsonResponse({"data" : list(compound_info)} , status=200)
 
