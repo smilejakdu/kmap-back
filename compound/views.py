@@ -4,35 +4,33 @@ from .models      import Compound
 
 
 class CompoundView(View):
-    def get(self , request , chem_index):
-        print(chem_index)
-        if not chem_index:
-            return JsonResponse({"message" : "DOES_NOT_CHEM_INDEX"} , status=400)
-
+    def get(self , request , kaipharm_chem_id):
+        print(kaipharm_chem_id)
         try :
-            compound_info = (Compound.
-                             objects.
-                             filter(kaipharm_chem_index = chem_index).
-                             values("subset",
-                                    "japan",
-                                    "europe",
-                                    "usa",
-                                    "nci_cancer",
-                                    "kaichem_id",
-                                    "kaipharm_chem_index",
-                                    "chem_series",
-                                    "chem_series_cid",
-                                    "compound",
-                                    "cid",
-                                    "inchikey",
-                                    "pubchem_name",
-                                    "ipk",
-                                    "prestwick",
-                                    "selleckchem",
-                                    "known_target",
-                                    "information"))
+            if Compound.objects.filter(id = kaipharm_chem_id).exists():
+                compound_info = (Compound.
+                                 objects.
+                                 filter(id = kaipharm_chem_id).
+                                 values("subset",
+                                        "japan",
+                                        "europe",
+                                        "usa",
+                                        "nci_cancer",
+                                        "kaichem_id",
+                                        "kaipharm_chem_index",
+                                        "chem_series",
+                                        "chem_series_cid",
+                                        "compound",
+                                        "cid",
+                                        "inchikey",
+                                        "pubchem_name",
+                                        "ipk",
+                                        "prestwick",
+                                        "selleckchem",
+                                        "known_target",
+                                        "information"))
 
-            return JsonResponse({"data" : list(compound_info)} , status=200)
+                return JsonResponse({"data" : list(compound_info)} , status=200)
 
         except Compound.DoesNotExist:
             return JsonResponse({"message" : "DOES_NOT_COMPOUND"} , status=400)

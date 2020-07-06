@@ -4,7 +4,7 @@ from .views      import (CompoundView ,
                          CompoundNameView)
 
 urlpatterns = [
-    path("search"            , SearchView.as_view()),
-    path("search/<str:name>" , CompoundNameView.as_view()),
-    path("<int:chem_index>"  , CompoundView.as_view()),
+    path("search"                 , SearchView.as_view()),
+    path("search/<str:name>"      , CompoundNameView.as_view()),
+    path("<int:kaipharm_chem_id>" , CompoundView.as_view()),
 ]
