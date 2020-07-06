@@ -10,12 +10,13 @@ class CompoundView(View):
             return JsonResponse({"message" : "does_not_compound"},status=400)
 
         try :
-            compound_info = (Compound.
-                             objects.
-                             filter(id = kaipharm_chem_id).
-                             values())
+            if Compound.objects.filter(id = kaipharm_chem_id).exists():
+                compound_info = (Compound.
+                                 objects.
+                                 filter(id = kaipharm_chem_id).
+                                 values())
 
-            return JsonResponse({"data" : list(compound_info)} , status=200)
+                return JsonResponse({"data" : list(compound_info)} , status=200)
 
         except TypeError:
             return JsonResponse({"message" : "INVALID_TYPE"}, status=400)
