@@ -222,8 +222,8 @@ class StatisticsPage(View):
 
             # Total KMAP-2K Profile Numbers
             columns_list = []
-            [columns_list.append({"name" : month,
-                                  "value": str(month_diction[month])[4:6]}) for month in month_diction]
+            [columns_list.append({"name" : str(month)[4:6],
+                                  "value": month_diction[month]}) for month in month_diction]
 
             # svg_data
             num = 0
