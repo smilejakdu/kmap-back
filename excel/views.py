@@ -1,27 +1,27 @@
-import json
-from .models import Excel, Sheet
-from django.views import View
+from .models          import Excel, Sheet
+from django.views     import View
 from django.db.models import Count
-from django.http import HttpResponse, JsonResponse
-from openpyxl import load_workbook
+from django.http      import HttpResponse, JsonResponse
+from openpyxl         import load_workbook
+from datetime         import datetime
+
+import json
 import xlrd
-from datetime import datetime
 import dateutil.relativedelta
 
 
 class ExcelView(View):
     def post(self, request):
-        data = request.FILES["file"]
-        sheetList = []
+        data       = request.FILES["file"]
+        sheetList  = []
         excel_name = str(data)
 
         try:
             if not data.name.endswith(".xlsx"):
-                return JsonResponse({"message": "NOT_EXCEL_FILE"}, status=400)
+                return JsonResponse({"message": "NOT_EXCEL_FILE"}, status = 400)
             print("excel_name: ", excel_name);
             if Excel.objects.filter(name=excel_name).exists():
-                print("엑셀에러")
-                return JsonResponse({"message": "EXISTS_EXCEL"}, status=400)
+                return JsonResponse({"message": "EXISTS_EXCEL"}, status = 400)
 
             Excel(
                 name=excel_name
@@ -207,46 +207,40 @@ class StatisticsPage(View):
 
             # profiles per month
             now                = datetime.now()
-            now_day            = now.strftime("%Y%m")
-            previous_day_one   = str(now + dateutil.relativedelta.relativedelta(months=-1)).split()[0].replace("-", "")[:6]
-            previous_day_two   = str(now + dateutil.relativedelta.relativedelta(months=-2)).split()[0].replace("-", "")[:6]
+            sheet              = Sheet.objects.values("NGS_Data_Date")
+            month_diction      = {}
 
-            now_list = []
-            previous_day_one_list = []
-            previous_day_two_list = []
+            for s in sheet:
+                month_diction[str(s["NGS_Data_Date"])[:6]] = 0
 
-            profiles_per_month = Sheet.objects.values("NGS_Data_Date")
-            for p in profiles_per_month:
-                if str(p["NGS_Data_Date"])[:6] == now_day:
-                    now_list.append(str(p["NGS_Data_Date"]))
-                elif str(p["NGS_Data_Date"])[:6] == previous_day_one:
-                    previous_day_one_list.append(str(p["NGS_Data_Date"]))
-                elif str(p["NGS_Data_Date"])[:6] == previous_day_two:
-                    previous_day_two_list.append(str(p["NGS_Data_Date"]))
+            for s in sheet:
+                date = str(s["NGS_Data_Date"])[:6] # 202007
+                if date in month_diction:
+                    month_diction[date] = month_diction[date] + 1
+
+            print(month_diction) # {'202005': 8, '202004': 3, '202006': 5}
+
             # Total KMAP-2K Profile Numbers
-            columns_list = [
-                {"name" : f"{previous_day_two[4:]}월" , "value" : len(previous_day_two_list)},
-                {"name" : f"{previous_day_one[4:]}월" , "value" : len(previous_day_one_list)},
-                {"name" : f"{now_day[4:]}월"          , "value" : len(now_list)}]
+            columns_list = []
+            [columns_list.append({"name": month, "value": month_diction[month]}) for month in month_diction]
 
             # svg_data
             num = 0
             svg_data_list = []
+
             while True :
                 print(str(now + dateutil.relativedelta.relativedelta(months = num)).split()[0].replace("-", "")[:6])
                 date  = str(now + dateutil.relativedelta.relativedelta(months = num)).split()[0].replace("-", "")[:6] # 202006
-                year  = date[:4]
-                month = date[4:]
+                year  = date[:4] # 2020
+                month = date[4:] # 06
                 if int(month) < 10:
                     month = date[5:6]
                 if Sheet.objects.filter(create_at__year__lte  = year ,
                                         create_at__month__lte = month).count() == 0: # 16
                     break
                 svg_data_list.append({"name"  : f"{date}",
-                                      "value" : Sheet.
-                                      objects.
-                                      filter(create_at__year__lte  = year ,
-                                             create_at__month__lte = month).count()})
+                                      "value" : Sheet.objects.filter(create_at__year__lte  = year ,
+                                                                     create_at__month__lte = month).count()})
                 num = num -1
 
             return JsonResponse({"data": {

@@ -1,4 +1,3 @@
-from django.shortcuts import render
 import json
 import jwt
 import re
@@ -24,6 +23,7 @@ class SignUpView(View):
                     user_id  = data["user_id"],
                     password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
                 ).save()
+
                 return HttpResponse(status=200)
 
         except ValidationError:
@@ -47,7 +47,7 @@ class LoginView(View):
 
                     token = jwt.encode({'user_id': data['user_id']},
                                            SECRET_KEY['secret'],
-                                           algorithm=ALGORITHM).decode()
+                                           algorithm = ALGORITHM).decode()
 
                     return JsonResponse({'access': token}, status=200, content_type="application/json")
 
