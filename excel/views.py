@@ -205,8 +205,7 @@ class StatisticsPage(View):
             kaichem_number = Sheet.objects.values("KaiChem_ID").distinct().count()  # KaiChem_ID 의 수
             circle_number = kaichem_number * 100 // 1366
 
-            # profiles per month
-            now                = datetime.now()
+            # columns
             sheet              = Sheet.objects.values("NGS_Data_Date")
             month_diction      = {}
 
@@ -220,13 +219,14 @@ class StatisticsPage(View):
 
             print(month_diction) # {'202005': 8, '202004': 3, '202006': 5}
 
-            # Total KMAP-2K Profile Numbers
             columns_list = []
             [columns_list.append({"name" : str(month)[4:6],
-                                  "value": month_diction[month]}) for month in month_diction]
+                                  "value": month_diction[month]}) for month in sorted(month_diction.keys())]
+
+            # svg
 
             svg_data_list = []
-            svg_date = []
+            svg_date      = []
             print(month_diction)  # {'202005': 8, '202004': 3, '202006': 5}
 
             for s in sorted(month_diction.keys()):
@@ -242,11 +242,9 @@ class StatisticsPage(View):
                         svg_num = svg_num + int(v)
 
                 svg_data_list.append({
-                    "name"  : str(s),
+                    "name"  : str(s)[4:6],
                     "value" : svg_num
                 })
-
-
 
             return JsonResponse({"data": {
                 "kaichem_number" : kaichem_number,
