@@ -151,7 +151,7 @@ class SheetDetailView(View):
             return JsonResponse({"message": "DOESNOT_SHEET"}, status=400)
 
         try:
-            excel_id = Excel.objects.get(name=excel_name).id
+            excel_id   = Excel.objects.get(name=excel_name).id
             sheet_data = (Sheet.
                           objects.
                           filter(excel_name_id=excel_id, name=sheet_name).
@@ -170,7 +170,7 @@ class SheetDetailView(View):
                                  "NGS_Data_Date"
                                  ))
 
-            cols = []
+            cols      = []
             cols_dict = []
             cols.append("id")
             [cols.append(sheet) for sheet in sheet_data[0]]
@@ -182,9 +182,9 @@ class SheetDetailView(View):
                 [row.append(sheet) for sheet in sheet_data[num].values()]
                 rows.append(row)
 
-            return JsonResponse({"sheet_table": {
-                "cols": cols_dict,
-                "rows": rows,
+            return JsonResponse({"sheet_table" : {
+                "cols" : cols_dict,
+                "rows" : rows,
             }}, status=200)
 
         except KeyError:
@@ -225,24 +225,28 @@ class StatisticsPage(View):
             [columns_list.append({"name" : str(month)[4:6],
                                   "value": month_diction[month]}) for month in month_diction]
 
-            # svg_data
-            num = 0
             svg_data_list = []
+            svg_date = []
+            print(month_diction)  # {'202005': 8, '202004': 3, '202006': 5}
 
-            while True :
-                print(str(now + dateutil.relativedelta.relativedelta(months = num)).split()[0].replace("-", "")[:6])
-                date  = str(now + dateutil.relativedelta.relativedelta(months = num)).split()[0].replace("-", "")[:6] # 202006
-                year  = date[:4] # 2020
-                month = date[4:] # 06
-                if int(month) < 10:
-                    month = date[5:6]
-                if Sheet.objects.filter(create_at__year__lte  = year ,
-                                        create_at__month__lte = month).count() == 0: # 16
-                    break
-                svg_data_list.append({"name"  : f"{date}",
-                                      "value" : Sheet.objects.filter(create_at__year__lte  = year ,
-                                                                     create_at__month__lte = month).count()})
-                num = num -1
+            for s in sorted(month_diction.keys()):
+                svg_date.append(s)
+
+            print(svg_date) # ['202004', '202005', '202006']
+
+            for s in svg_date: # "202004"
+                svg_num = 0
+
+                for k , v in month_diction.items():
+                    if int(s) >= int(k):
+                        svg_num = svg_num + int(v)
+
+                svg_data_list.append({
+                    "name"  : str(s),
+                    "value" : svg_num
+                })
+
+
 
             return JsonResponse({"data": {
                 "kaichem_number" : kaichem_number,
