@@ -126,7 +126,7 @@ class ExcelDetailView(View):
             return JsonResponse({"message", "DOESNOT_EXCEL"}, status=400)
 
         try:
-            excel_name = Excel.objects.get(name=excel_name)
+            excel_name = Excel.objects.get(name = excel_name)
             print(excel_name)
             excel_name.delete()
 
@@ -217,24 +217,18 @@ class StatisticsPage(View):
                 if date in month_diction:
                     month_diction[date] = month_diction[date] + 1
 
-            print(month_diction) # {'202005': 8, '202004': 3, '202006': 5}
-
             columns_list = []
             [columns_list.append({"name" : str(month)[4:6],
                                   "value": month_diction[month]}) for month in sorted(month_diction.keys())]
 
             # svg
-
             svg_data_list = []
             svg_date      = []
-            print(month_diction)  # {'202005': 8, '202004': 3, '202006': 5}
 
             for s in sorted(month_diction.keys()):
                 svg_date.append(s)
 
-            print(svg_date) # ['202004', '202005', '202006']
-
-            for s in svg_date: # "202004"
+            for s in svg_date:
                 svg_num = 0
 
                 for k , v in month_diction.items():
