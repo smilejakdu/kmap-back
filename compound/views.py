@@ -1,13 +1,12 @@
 from django.views import View
-from django.http  import HttpResponse , JsonResponse
+from django.http  import JsonResponse
 from .models      import Compound
-
 
 class CompoundView(View):
     def get(self , request , kaipharm_chem_id):
 
         if not Compound.objects.filter(id = kaipharm_chem_id).exists():
-            return JsonResponse({"message" : "does_not_compound"},status=400)
+            return JsonResponse({"message" : "DOES_NOT_COMPOUND"},status=400)
 
         try :
             if Compound.objects.filter(id = kaipharm_chem_id).exists():
@@ -20,6 +19,9 @@ class CompoundView(View):
 
         except TypeError:
             return JsonResponse({"message" : "INVALID_TYPE"}, status=400)
+
+        except Compound.DoesNotExist:
+            return JsonResponse({"message" :"DOES_NOT_COMPOUND"} , status=400)
 
         except Exception as e:
             return JsonResponse({"message" : e} , status=400)

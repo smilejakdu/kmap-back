@@ -1,9 +1,7 @@
 from django.db import models
 
-# Create your models here.
-
 class Compound(models.Model):
-    subset              = models.CharField(max_length = 250 ,null  = True)
+    subset              = models.CharField(max_length = 250, null  = True)
     kmap_ver            = models.CharField(max_length = 250 , null = True)
     japan               = models.IntegerField(null = True)
     europe              = models.IntegerField(null = True)

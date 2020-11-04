@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from compound.models             import Compound
 
 import xlrd
-import os
+import time
 
 class Command(BaseCommand):
     help = 'manage compound objects'
@@ -19,6 +19,8 @@ class Command(BaseCommand):
 
         if options['add_compound']:
             print("add_compound_data")
+
+            start = time.time()
             workbook    = xlrd.open_workbook("kmap_info.xlsx")
             worksheet   = workbook.sheet_by_name("Sheet 1")
             total_list  = worksheet._cell_values
@@ -53,5 +55,12 @@ class Command(BaseCommand):
                     information         = row[21],
                 )
 
+            logic_time   = round(time.time() - start, 2)
+            total_minute = logic_time / 60
+            total_second = logic_time % 60
+
+            print(f"걸릴 시간은 {total_minute}분  {total_second} 초 걸렸습니다.")
+
 print("=" * 100)
+
 

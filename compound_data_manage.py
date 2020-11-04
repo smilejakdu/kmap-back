@@ -1,14 +1,15 @@
 import xlrd
 import os
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'kmap_info_back.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE',
+                      'kmap_info_back.settings')
 import django
 django.setup()
 from compound.models             import Compound
 
-workbook = xlrd.open_workbook("kmap_info.xlsx")
-worksheet = workbook.sheet_by_name("Sheet 1")
-total_list = worksheet._cell_values
+workbook    = xlrd.open_workbook("kmap_info.xlsx")
+worksheet   = workbook.sheet_by_name("Sheet 1")
+total_list  = worksheet._cell_values
 result_list = []
 
 for xr in total_list[1:]:

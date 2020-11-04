@@ -1,13 +1,9 @@
-from .models          import Excel, Sheet
+from .models          import (Excel,
+                              Sheet)
+
 from django.views     import View
-from django.db.models import Count
 from django.http      import HttpResponse, JsonResponse
 from openpyxl         import load_workbook
-from datetime         import datetime
-
-import json
-import xlrd
-import dateutil.relativedelta
 
 
 class ExcelView(View):
@@ -19,44 +15,46 @@ class ExcelView(View):
         try:
             if not data.name.endswith(".xlsx"):
                 return JsonResponse({"message": "NOT_EXCEL_FILE"}, status = 400)
-            print("excel_name: ", excel_name);
-            if Excel.objects.filter(name=excel_name).exists():
+
+            if Excel.objects.filter(name = excel_name).exists():
                 return JsonResponse({"message": "EXISTS_EXCEL"}, status = 400)
 
             Excel(
-                name=excel_name
+                name = excel_name
             ).save()
 
             wb = load_workbook(data, data_only=True)
             [sheetList.append(i) for i in wb.sheetnames]
 
             for sheet in sheetList:
-                sheet_row = wb[sheet]
+                sheet_row  = wb[sheet]
                 all_values = []
 
                 for row in sheet_row.rows:
-                    row_value = []
-                    [row_value.append(cell.value) for cell in row]
+                    row_value = [cell.value for cell in row]
                     all_values.append(row_value)
 
                 for num, values in enumerate(all_values):
                     if not num == 0:
                         Sheet.objects.create(
-                            name=sheet,
-                            Subset=values[0],
-                            Concentration_nM=values[1],
-                            Replicate_No=values[2],
-                            KaiChem_ID=values[3],
-                            Cell=values[4],
-                            Treat_Time=values[5],
-                            Well_Location=values[6],
-                            Index_No=values[7],
-                            Seeding_Date=values[8],
-                            RNA_Extraction_Date=values[9],
-                            Library_Prep_Date=values[10],
-                            Seq_Request_Date=values[11],
-                            NGS_Data_Date=values[12],
-                            excel_name_id=Excel.objects.get(name=excel_name).id
+                            name                      = sheet,
+                            Subset                    = values[0],
+                            Compound_concentration_nM = values[1],
+                            Replicate                 = values[2],
+                            KaiChem_ID                = values[3],
+                            Compound_Name             = values[4],
+                            Compound_treatment_time   = values[5],
+                            Cell_line                 = values[6],
+                            Plate_ID                  = values[7],
+                            Well                      = values[8],
+                            Sample_ID                 = values[9],
+                            MGI_Index_No              = values[10],
+                            RNA_Extraction_date       = values[11],
+                            Library_Prep_Date         = values[12],
+                            Sample_sending_date_LAS   = values[13],
+                            RNA_quantity_ng           = values[14],
+                            DNA_quantity_ng           = values[15],
+                            excel_name_id             = Excel.objects.get(name=excel_name).id
                         )
 
             return HttpResponse(status=200)
@@ -69,10 +67,10 @@ class ExcelView(View):
             query = request.GET.get('keyword', None)
 
             if query:
-                excel_search = Excel.objects.filter(name__icontains=query).all()
-                excel_data = [{
-                    "id": excel.id,
-                    "name": excel.name
+                excel_search = Excel.objects.filter(name__icontains = query).all()
+                excel_data   = [{
+                    "id"   : excel.id,
+                    "name" : excel.name
                 } for excel in excel_search]
 
                 return JsonResponse({"data": excel_data}, status=200)
@@ -127,7 +125,6 @@ class ExcelDetailView(View):
 
         try:
             excel_name = Excel.objects.get(name = excel_name)
-            print(excel_name)
             excel_name.delete()
 
             return HttpResponse(status=200)
@@ -154,25 +151,27 @@ class SheetDetailView(View):
             excel_id   = Excel.objects.get(name=excel_name).id
             sheet_data = (Sheet.
                           objects.
-                          filter(excel_name_id=excel_id, name=sheet_name).
-                          values("Subset",
-                                 "Concentration_nM",
-                                 "Replicate_No",
-                                 "KaiChem_ID",
-                                 "Cell",
-                                 "Treat_Time",
-                                 "Well_Location",
-                                 "Index_No",
-                                 "Seeding_Date",
-                                 "RNA_Extraction_Date",
-                                 "Library_Prep_Date",
-                                 "Seq_Request_Date",
-                                 "NGS_Data_Date"
-                                 ))
+                          filter(excel_name_id=excel_id,
+                                 name=sheet_name).
+                                  values("Subset",
+                                         "Concentration_nM",
+                                         "Replicate_No",
+                                         "KaiChem_ID",
+                                         "Cell",
+                                         "Treat_Time",
+                                         "Well_Location",
+                                         "Index_No",
+                                         "Seeding_Date",
+                                         "RNA_Extraction_Date",
+                                         "Library_Prep_Date",
+                                         "Seq_Request_Date",
+                                         "NGS_Data_Date"
+                                        ))
 
             cols      = []
             cols_dict = []
             cols.append("id")
+
             [cols.append(sheet) for sheet in sheet_data[0]]
             [cols_dict.append({"name": cols[num], "key": num}) for num in range(0, len(cols))]
 
@@ -202,20 +201,21 @@ class StatisticsPage(View):
 
         try:
             # circle info
+            # DMSO1 , DMSO2 , Niclo1 , Niclo2 제외
             kaichem_number = Sheet.objects.values("KaiChem_ID").distinct().count()  # KaiChem_ID 의 수
-            circle_number = kaichem_number * 100 // 1366
+            circle_number  = kaichem_number * 100 // 1364
 
             # columns
             sheet              = Sheet.objects.values("NGS_Data_Date")
             month_diction      = {}
 
-            for s in sheet:
-                month_diction[str(s["NGS_Data_Date"])[:6]] = 0
+            for sheet_info in sheet:
+                month_diction[str(sheet_info["NGS_Data_Date"])[:6]] = 0
 
-            for s in sheet:
-                date = str(s["NGS_Data_Date"])[:6] # 202007
-                if date in month_diction:
-                    month_diction[date] = month_diction[date] + 1
+            for sheet_info in sheet:
+                year_month = str(sheet_info["NGS_Data_Date"])[:6] # 202007
+                if year_month in month_diction:
+                    month_diction[year_month] = month_diction[year_month] + 1
 
             columns_list = []
             [columns_list.append({"name" : str(month)[4:6],

@@ -2,7 +2,7 @@ import jwt
 
 from .models import Account
 from kmap_info_back.my_settings import ALGORITHM, SECRET_KEY
-from django.http                import JsonResponse , HttpResponse
+from django.http                import HttpResponse
 
 
 def login_check(func):
