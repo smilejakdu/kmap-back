@@ -25,7 +25,7 @@ class Sheet(models.Model):
     Sample_ID                 = models.CharField(max_length=250 , null=True)
     MGI_Index_No              = models.IntegerField(null = True)
     RNA_Extraction_date       = models.CharField(max_length=150 , null = True)
-    Library_Prep_Date         = models.CharField(max_length=150 , null = True)
+    Library_Prep_date         = models.CharField(max_length=150 , null = True)
     Sample_sending_date_LAS   = models.CharField(max_length=250 , null=True)
     RNA_quantity_ng           = models.IntegerField(null=True)
     DNA_quantity_ng           = models.IntegerField(null=True)
