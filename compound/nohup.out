@@ -1,0 +1,33 @@
+[2020-07-05 08:16:19 +0000] [29530] [INFO] Starting gunicorn 20.0.4
+[2020-07-05 08:16:19 +0000] [29530] [INFO] Listening at: http://0.0.0.0:8000 (29530)
+[2020-07-05 08:16:19 +0000] [29530] [INFO] Using worker: sync
+[2020-07-05 08:16:19 +0000] [29533] [INFO] Booting worker with pid: 29533
+[2020-07-05 08:16:19 +0000] [29533] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/home/kmapinfo/miniconda3/envs/kmap/lib/python3.7/site-packages/gunicorn/arbiter.py", line 583, in spawn_worker
+    worker.init_process()
+  File "/home/kmapinfo/miniconda3/envs/kmap/lib/python3.7/site-packages/gunicorn/workers/base.py", line 119, in init_process
+    self.load_wsgi()
+  File "/home/kmapinfo/miniconda3/envs/kmap/lib/python3.7/site-packages/gunicorn/workers/base.py", line 144, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/home/kmapinfo/miniconda3/envs/kmap/lib/python3.7/site-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/home/kmapinfo/miniconda3/envs/kmap/lib/python3.7/site-packages/gunicorn/app/wsgiapp.py", line 49, in load
+    return self.load_wsgiapp()
+  File "/home/kmapinfo/miniconda3/envs/kmap/lib/python3.7/site-packages/gunicorn/app/wsgiapp.py", line 39, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/home/kmapinfo/miniconda3/envs/kmap/lib/python3.7/site-packages/gunicorn/util.py", line 358, in import_app
+    mod = importlib.import_module(module)
+  File "/home/kmapinfo/miniconda3/envs/kmap/lib/python3.7/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 953, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "<frozen importlib._bootstrap>", line 1006, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 983, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 965, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'kmap_info_back'
+[2020-07-05 08:16:19 +0000] [29533] [INFO] Worker exiting (pid: 29533)
+[2020-07-05 08:16:19 +0000] [29530] [INFO] Shutting down: Master
+[2020-07-05 08:16:19 +0000] [29530] [INFO] Reason: Worker failed to boot.
