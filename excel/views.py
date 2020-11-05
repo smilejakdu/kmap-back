@@ -37,7 +37,7 @@ class ExcelView(View):
 
                 for num, values in enumerate(all_values):
                     if not num == 0:
-                        print("sheet :" sheet )
+                        print("sheet :", sheet )
                         print("name : " , name)
                         print("values :" , values)
                         exit()
