@@ -22,9 +22,9 @@ class ExcelView(View):
 
             Excel(
                 name = excel_name
-            ).save()
+            ).save() # 저장 성공
 
-            wb = load_workbook(data, data_only=True)
+            wb = load_workbook(data, data_only = True)
             [sheetList.append(i) for i in wb.sheetnames]
 
             for sheet in sheetList:
