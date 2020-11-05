@@ -52,6 +52,8 @@ class ExcelView(View):
                         print("Sample ID", values[10])
                         print("MGI Index No",values[11])
                         print("RNA extraction date",values[12])
+                        print(values[12] , type(values[12]))
+                        print(values[12].year)
                         print("Library prep date",values[13])
                         print("Sample sending date",values[14])
                         print("RNA quantity_ng",values[15])
