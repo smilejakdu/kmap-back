@@ -37,6 +37,23 @@ class ExcelView(View):
 
                 for num, values in enumerate(all_values):
                     if not num == 0:
+                        print("name" , sheet)
+                        print("Subset" , values[1])
+                        print("Compound_concentration_nM" , values[2])
+                        print("Replicate" , values[3])
+                        print("KaiChem_ID" , values[4])
+                        print("KaiChem_ID" , values[5])
+                        print("6" , values[6])
+                        print("7", values[7])
+                        print("8", values[8])
+                        print("9",values[9])
+                        print("10", values[10])
+                        print("11",values[11])
+                        print("12",values[12])
+                        print("13",values[13])
+                        print("14",values[14])
+                        print("15",values[15])
+                        print("16",values[16])
 
                         Sheet.objects.create(
                             name                      = sheet,
