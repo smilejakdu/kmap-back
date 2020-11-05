@@ -11,6 +11,7 @@ class ExcelView(View):
         data       = request.FILES["file"]
         sheetList  = []
         excel_name = str(data)
+        print('excel_name :' , excel_name)
 
         try:
             if not data.name.endswith(".xlsx"):
@@ -60,6 +61,9 @@ class ExcelView(View):
             return HttpResponse(status=200)
 
         except KeyError:
+            return JsonResponse({"message": "INVALID_KEY"}, status=400)
+
+        except Exception as e:
             return JsonResponse({"message": "INVALID_KEY"}, status=400)
 
     def get(self, request):
