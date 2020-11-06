@@ -51,12 +51,14 @@ class ExcelView(View):
                         print("Well",values[9])
                         print("Sample ID", values[10])
                         print("MGI Index No",values[11])
+                        print(values[12])
                         rna_date     = datetime.strptime(values[12],"%Y%m%d").timestamp()
                         livrary_date = datetime.strptime(values[13],"%Y%m%d").timestamp()
                         sample_date  = datetime.strptime(values[14],"%Y%m%d").timestamp()
-                        print(ran_date)
-                        print(livrary_date)
-                        print(sample_date)
+                        print("ran_date : " ,ran_date)
+                        print("Livrary_date :" , livrary_date)
+                        print("Sample_date :" , sample_date)
+
                         print("RNA quantity_ng",values[15])
                         print("DNA quantity_ng",values[16])
 
