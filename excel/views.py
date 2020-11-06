@@ -1,5 +1,4 @@
 import datetime
-
 from .models          import (Excel,
                               Sheet)
 
@@ -51,7 +50,7 @@ class ExcelView(View):
                         print("Well",values[9])
                         print("Sample ID", values[10])
                         print("MGI Index No",values[11])
-                        print(values[12])
+                        print(values[12],type(values[12])) # 2020-09-25
                         rna_date     = datetime.strptime(values[12],"%Y%m%d").timestamp()
                         livrary_date = datetime.strptime(values[13],"%Y%m%d").timestamp()
                         sample_date  = datetime.strptime(values[14],"%Y%m%d").timestamp()
