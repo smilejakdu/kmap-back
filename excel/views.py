@@ -50,10 +50,10 @@ class ExcelView(View):
                         print("Well",values[9])
                         print("Sample ID", values[10])
                         print("MGI Index No",values[11])
-                        print(values[12],type(values[12])) # 2020-09-25
-                        rna_date     = datetime.strptime(values[12],"%Y%m%d").timestamp()
-                        livrary_date = datetime.strptime(values[13],"%Y%m%d").timestamp()
-                        sample_date  = datetime.strptime(values[14],"%Y%m%d").timestamp()
+                        print(values[12],type(values[12])) # 2020-09-25 00:00:00 <class 'datetime.datetime'>
+                        rna_date     = datetime.strftime(values[12],"%Y%m%d").timestamp()
+                        livrary_date = datetime.strftime(values[13],"%Y%m%d").timestamp()
+                        sample_date  = datetime.strftime(values[14],"%Y%m%d").timestamp()
                         print("ran_date : " ,ran_date)
                         print("Livrary_date :" , livrary_date)
                         print("Sample_date :" , sample_date)
