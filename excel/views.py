@@ -38,22 +38,12 @@ class ExcelView(View):
 
                 for num, values in enumerate(all_values):
                     if not num == 0:
-                        print("name" , sheet)
-                        print("Subset" , values[1])
-                        print("Compound_concentration_nM" , values[2])
-                        print("Replicate" , values[3])
-                        print("KaiChem_ID" , values[4])
-                        print("Compound Name" , values[5])
-                        print("Compound treatment time" , values[6])
-                        print("Cell line", values[7])
-                        print("Plate ID", values[8])
-                        print("Well",values[9])
-                        print("Sample ID", values[10])
-                        print("MGI Index No",values[11])
                         print(values[12],type(values[12])) # 2020-09-25 00:00:00 <class 'datetime.datetime'>
-                        rna_date     = datetime.strftime(values[12],"%Y%m%d").timestamp()
-                        livrary_date = datetime.strftime(values[13],"%Y%m%d").timestamp()
-                        sample_date  = datetime.strftime(values[14],"%Y%m%d").timestamp()
+#                        rna_date     = datetime.strftime(values[12],"%Y%m%d").timestamp()
+#                        livrary_date = datetime.strftime(values[13],"%Y%m%d").timestamp()
+#                        sample_date  = datetime.strftime(values[14],"%Y%m%d").timestamp()
+
+                        print(values[12].strftime("%Y%m%d"))
                         print("ran_date : " ,ran_date)
                         print("Livrary_date :" , livrary_date)
                         print("Sample_date :" , sample_date)
