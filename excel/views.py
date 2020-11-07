@@ -39,6 +39,10 @@ class ExcelView(View):
                 for num, values in enumerate(all_values):
                     if not num == 0:
 
+                        print(values[12].strftime("%Y%m%d"))
+                        print(values[13].strftime("%Y%m%d"))
+                        print(values[14].strftime("%Y%m%d"))
+
                         Sheet.objects.create(
                             name                      = sheet,
                             Subset                    = values[1],
