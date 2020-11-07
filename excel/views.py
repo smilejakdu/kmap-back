@@ -43,13 +43,10 @@ class ExcelView(View):
 #                        livrary_date = datetime.strftime(values[13],"%Y%m%d").timestamp()
 #                        sample_date  = datetime.strftime(values[14],"%Y%m%d").timestamp()
 
-                        print(values[12].strftime("%Y%m%d"))
-                        print("ran_date : " ,ran_date)
-                        print("Livrary_date :" , livrary_date)
-                        print("Sample_date :" , sample_date)
 
-                        print("RNA quantity_ng",values[15])
-                        print("DNA quantity_ng",values[16])
+                        print(values[12].strftime("%Y%m%d"))
+                        print(values[13].strftime("%Y%m%d"))
+                        print(values[14].strftime("%Y%m%d"))
 
                         Sheet.objects.create(
                             name                      = sheet,
