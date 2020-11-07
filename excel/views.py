@@ -39,9 +39,8 @@ class ExcelView(View):
                 for num, values in enumerate(all_values):
                     if not num == 0:
 
-                        print(values[12].strftime("%Y%m%d"))
-                        print(values[13].strftime("%Y%m%d"))
-                        print(values[14].strftime("%Y%m%d"))
+                        if not values[14]:
+                            sample_sending_date = values[14].strftime("%Y%m%d")
 
                         Sheet.objects.create(
                             name                      = sheet,
@@ -58,7 +57,7 @@ class ExcelView(View):
                             MGI_Index_No              = values[11],
                             RNA_Extraction_date       = values[12].strftime("%Y%m%d"),
                             Library_Prep_Date         = values[13].strftime("%Y%m%d"),
-                            Sample_sending_date_LAS   = values[14].strftime("%Y%m%d"),
+                            Sample_sending_date_LAS   = sample_sending_date,
                             RNA_quantity_ng           = values[15],
                             DNA_quantity_ng           = values[16],
                             excel_name_id             = Excel.objects.get(name=excel_name).id
