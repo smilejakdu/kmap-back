@@ -69,7 +69,7 @@ class ExcelView(View):
             return JsonResponse({"message": "INVALID_KEY"}, status=400)
 
         except Exception as e:
-            return JsonResponse({"message": "INVALID_KEY"}, status=400)
+            return JsonResponse({"message": e}, status=400)
 
     def get(self, request):
         try:
