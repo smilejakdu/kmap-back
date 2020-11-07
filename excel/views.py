@@ -38,15 +38,6 @@ class ExcelView(View):
 
                 for num, values in enumerate(all_values):
                     if not num == 0:
-                        print(values[12],type(values[12])) # 2020-09-25 00:00:00 <class 'datetime.datetime'>
-#                        rna_date     = datetime.strftime(values[12],"%Y%m%d").timestamp()
-#                        livrary_date = datetime.strftime(values[13],"%Y%m%d").timestamp()
-#                        sample_date  = datetime.strftime(values[14],"%Y%m%d").timestamp()
-
-
-                        print(values[12].strftime("%Y%m%d"))
-                        print(values[13].strftime("%Y%m%d"))
-                        print(values[14].strftime("%Y%m%d"))
 
                         Sheet.objects.create(
                             name                      = sheet,
@@ -61,9 +52,9 @@ class ExcelView(View):
                             Well                      = values[9],
                             Sample_ID                 = values[10],
                             MGI_Index_No              = values[11],
-                            RNA_Extraction_date       = values[12],
-                            Library_Prep_Date         = values[13],
-                            Sample_sending_date_LAS   = values[14],
+                            RNA_Extraction_date       = values[12].strftime("%Y%m%d"),
+                            Library_Prep_Date         = values[13].strftime("%Y%m%d"),
+                            Sample_sending_date_LAS   = values[14].strftime("%Y%m%d"),
                             RNA_quantity_ng           = values[15],
                             DNA_quantity_ng           = values[16],
                             excel_name_id             = Excel.objects.get(name=excel_name).id
