@@ -39,6 +39,8 @@ class ExcelView(View):
                 for num, values in enumerate(all_values):
                     if not num == 0:
 
+                        print(values[14])
+                        exit()
                         if not values[14]:
                             sample_sending_date = values[14].strftime("%Y%m%d")
 
