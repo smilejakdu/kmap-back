@@ -39,7 +39,7 @@ class ExcelView(View):
                 for num, values in enumerate(all_values):
                     if not num == 0:
 
-                        if values[14] is None:
+                        if values[14] is not None:
                             sample_sending_date = values[14].strftime("%Y%m%d")
 
                         Sheet.objects.create(
