@@ -58,7 +58,7 @@ class ExcelView(View):
                             Sample_ID                 = values[10],
                             MGI_Index_No              = values[11],
                             RNA_Extraction_date       = values[12].strftime("%Y%m%d"),
-                            Library_Prep_Date         = values[13].strftime("%Y%m%d"),
+                            Library_Prep_date         = values[13].strftime("%Y%m%d"),
                             Sample_sending_date_LAS   = sample_sending_date,
                             RNA_quantity_ng           = values[15],
                             DNA_quantity_ng           = values[16],
