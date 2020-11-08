@@ -41,6 +41,8 @@ class ExcelView(View):
 
                         if values[14] is not None:
                             sample_sending_date = values[14].strftime("%Y%m%d")
+                        else:
+                            sample_sending_date = ""
 
                         Sheet.objects.create(
                             name                      = sheet,
