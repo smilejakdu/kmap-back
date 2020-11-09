@@ -159,20 +159,7 @@ class SheetDetailView(View):
                           objects.
                           filter(excel_name_id=excel_id,
                                  name=sheet_name).
-                                  values("Subset",
-                                         "Concentration_nM",
-                                         "Replicate_No",
-                                         "KaiChem_ID",
-                                         "Cell",
-                                         "Treat_Time",
-                                         "Well_Location",
-                                         "Index_No",
-                                         "Seeding_Date",
-                                         "RNA_Extraction_Date",
-                                         "Library_Prep_Date",
-                                         "Seq_Request_Date",
-                                         "NGS_Data_Date"
-                                        ))
+                                  values())
 
             cols      = []
             cols_dict = []
