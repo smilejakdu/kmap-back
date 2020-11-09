@@ -210,12 +210,11 @@ class StatisticsPage(View):
 
         try:
             # circle info
-            # DMSO1 , DMSO2 , Niclo1 , Niclo2 제외
-            kaichem_number = Sheet.objects.values("KaiChem_ID").distinct().count()  # KaiChem_ID 의 수
-            circle_number  = kaichem_number * 100 // 1364
+            kaichem_exclude = Sheet.objects.exclude(KaiChem_ID__in=["DMSO1","DMSO2" ,"Niclo1","Niclo2"]).distinct().count()
+            circle_number   = kaichem_exclude * 100 // 1364
 
             # columns
-            sheet              = Sheet.objects.values("NGS_Data_Date")
+            sheet              = Sheet.objects.values("Library_Prep_date")
             month_diction      = {}
 
             for sheet_info in sheet:
