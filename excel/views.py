@@ -269,7 +269,7 @@ class StatisticsPage(View):
             return JsonResponse({"data": {
                 "kaichem_number" : kaichem_exclude,
                 "circle_number"  : circle_number,
-                "columns_list"   : columns_result,
+                "columns_list"   : new_data_json,
                 "svg_data_list"  : '',
             }}, status=200)
 
