@@ -261,6 +261,8 @@ class StatisticsPage(View):
                 new_data_json[new_data[0]][new_data[1]][new_data[2] - 1] += 1
 
             columns_result = pp(new_data_json)
+            print(new_data_json)
+            print(columns_result)
 
             # svg
 
