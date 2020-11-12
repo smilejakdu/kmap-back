@@ -268,7 +268,7 @@ class StatisticsPage(View):
                 "kaichem_number" : kaichem_exclude,
                 "circle_number"  : circle_number,
                 "columns_list"   : columns_result,
-                "svg_data_list"  : svg_data_list,
+                "svg_data_list"  : '',
             }}, status=200)
 
         except KeyError:
