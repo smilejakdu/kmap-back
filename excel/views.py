@@ -1,10 +1,17 @@
 import datetime
-from .models          import (Excel,
-                              Sheet)
+import calendar
+import numpy as np
 
-from django.views     import View
-from django.http      import HttpResponse, JsonResponse
-from openpyxl         import load_workbook
+from pprint       import pprint as pp
+from collections  import Counter
+
+from .models      import (Excel,
+                          Sheet)
+
+from django.views import View
+from django.http  import HttpResponse, JsonResponse
+from openpyxl     import load_workbook
+
 
 
 class ExcelView(View):
@@ -160,7 +167,7 @@ class SheetDetailView(View):
                           filter(excel_name_id=excel_id,
                                  name=sheet_name).
                                   values(
-                                      "Subset", 
+                                      "Subset",
                                       "Compound_concentration_nM",
                                       "Replicate",
                                       "KaiChem_ID",
@@ -205,6 +212,45 @@ class SheetDetailView(View):
             return JsonResponse({"message": e}, status=400)
 
 
+calendar.setfirstweekday(6)
+
+
+def get_week_of_month(year, month, day):
+    year, month, day = int(year), int(month), int(day)
+    x             = np.array(calendar.monthcalendar(year, month))
+    week_of_month = np.where(x == day)[0][0] + 1
+    return week_of_month
+
+
+def get_max_week_no_of_month(year, month):
+    year, month = int(year), int(month)
+    x           = np.array(calendar.monthcalendar(year, month))
+    # print(len(x))
+    return len(x)
+
+def solution():
+    new_data_list = []
+    new_data_json = dict()
+
+    for data in data_list:
+        year  = data[0:4]
+        month = data[4:6]
+        day   = data[6:8]
+
+        result    = get_week_of_month(year, month, day)
+        temp_data = [year, month, result]
+        new_data_list.append(temp_data)
+
+    for new_data in new_data_list:
+        if new_data[0] not in new_data_json:
+            new_data_json[str(new_data[0])] = dict()
+        if new_data[1] not in new_data_json[new_data[0]]:
+            new_data_json[new_data[0]][new_data[1]] = [0] * get_max_week_no_of_month(new_data[0], new_data[1])
+        new_data_json[new_data[0]][new_data[1]][new_data[2] - 1] += 1
+    pp(new_data_json)
+
+
+
 class StatisticsPage(View):
     def get(self, request):
 
@@ -214,44 +260,38 @@ class StatisticsPage(View):
             circle_number   = kaichem_exclude * 100 // 1364
 
             # columns
-            sheet              = Sheet.objects.values("Library_Prep_date")
-            month_diction      = {}
+            sheet = (Sheet.
+                     objects.
+                     exclude(KaiChem_ID__in=["DMSO1","DMSO2" ,"Niclo1","Niclo2"]))
 
-            for sheet_info in sheet:
-                month_diction[str(sheet_info["NGS_Data_Date"])[:6]] = 0
+            year_month_day_list = [s.Library_Prep_date for s in sheet]
+            new_data_list       = []
+            new_data_json       = dict()
 
-            for sheet_info in sheet:
-                year_month = str(sheet_info["NGS_Data_Date"])[:6] # 202007
-                if year_month in month_diction:
-                    month_diction[year_month] = month_diction[year_month] + 1
+            for data in data_list:
+                year  = data[0:4]
+                month = data[4:6]
+                day   = data[6:8]
 
-            columns_list = []
-            [columns_list.append({"name" : str(month)[4:6],
-                                  "value": month_diction[month]}) for month in sorted(month_diction.keys())]
+                result    = get_week_of_month(year, month, day)
+                temp_data = [year, month, result]
+                new_data_list.append(temp_data)
+
+            for new_data in new_data_list:
+                if new_data[0] not in new_data_json:
+                    new_data_json[str(new_data[0])] = dict()
+                if new_data[1] not in new_data_json[new_data[0]]:
+                    new_data_json[new_data[0]][new_data[1]] = [0] * get_max_week_no_of_month(new_data[0], new_data[1])
+                new_data_json[new_data[0]][new_data[1]][new_data[2] - 1] += 1
+
+            columns_result = pp(new_data_json)
 
             # svg
-            svg_data_list = []
-            svg_date      = []
-
-            for s in sorted(month_diction.keys()):
-                svg_date.append(s)
-
-            for s in svg_date:
-                svg_num = 0
-
-                for k , v in month_diction.items():
-                    if int(s) >= int(k):
-                        svg_num = svg_num + int(v)
-
-                svg_data_list.append({
-                    "name"  : str(s)[4:6],
-                    "value" : svg_num
-                })
 
             return JsonResponse({"data": {
-                "kaichem_number" : kaichem_number,
+                "kaichem_number" : kaichem_exclude,
                 "circle_number"  : circle_number,
-                "columns_list"   : columns_list,
+                "columns_list"   : columns_result,
                 "svg_data_list"  : svg_data_list,
             }}, status=200)
 
