@@ -267,6 +267,7 @@ class StatisticsPage(View):
             new_data_json       = dict()
 
             for data in data_list:
+                # formatting
                 year  = data[0:4]
                 month = data[4:6]
                 day   = data[6:8]
@@ -275,14 +276,15 @@ class StatisticsPage(View):
                 temp_data = [year, month, result]
                 new_data_list.append(temp_data)
 
+            print(len(new_data_list))
             for new_data in new_data_list:
-                if new_data[0] not in new_data_json:
+                if str(new_data[0]) not in new_data_json:
                     new_data_json[str(new_data[0])] = dict()
-                if new_data[1] not in new_data_json[new_data[0]]:
-                    new_data_json[new_data[0]][new_data[1]] = [0] * get_max_week_no_of_month(new_data[0], new_data[1])
-                new_data_json[new_data[0]][new_data[1]][new_data[2] - 1] += 1
-
+                if str(new_data[1]) not in new_data_json[str(new_data[0])]:
+                    new_data_json[str(new_data[0])][str(new_data[1])] = [0]*6
+                new_data_json[str(new_data[0])][str(new_data[1])][new_data[2]-1] += 1
             columns_result = pp(new_data_json)
+
             print(new_data_json)
             print(columns_result)
 
