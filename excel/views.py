@@ -266,12 +266,12 @@ class StatisticsPage(View):
 
             # svg
 
-            return JsonResponse({"data": {
+            return JsonResponse({
                 "kaichem_number" : kaichem_exclude,
                 "circle_number"  : circle_number,
                 "columns_list"   : new_data_json,
                 "svg_data_list"  : '',
-            }}, status=200)
+            }, status=200)
 
         except KeyError:
             return HttpResponse(status=400)
