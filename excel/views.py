@@ -232,7 +232,7 @@ class StatisticsPage(View):
 
         try:
             # circle info
-            kaichem_exclude = Sheet.objects.exclude(KaiChem_ID__in=["DMSO1","DMSO2" ,"Niclo1","Niclo2"]).values("KaiChem_ID").count()
+            kaichem_exclude = Sheet.objects.exclude(KaiChem_ID__in=["DMSO1","DMSO2" ,"Niclo1","Niclo2"]).values("KaiChem_ID").distinct().count()
             circle_number   = kaichem_exclude * 100 // 1364
 
             # columns
