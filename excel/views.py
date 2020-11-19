@@ -254,7 +254,6 @@ class StatisticsPage(View):
                 temp_data = [year, month, result]
                 new_data_list.append(temp_data)
 
-            print(len(new_data_list))
             for new_data in new_data_list:
                 if str(new_data[0]) not in new_data_json:
                     new_data_json[str(new_data[0])] = dict()
@@ -263,16 +262,32 @@ class StatisticsPage(View):
                 new_data_json[str(new_data[0])][str(new_data[1])][new_data[2]-1] += 1
             columns_result = pp(new_data_json)
 
-            print(new_data_json)
-            print(columns_result)
-
             # svg
+            labels     = []
+            svg_data   = []
+            svg_number = 0
+            svg_list   = []
+
+            for svg in svg_formatting:
+                svg_list.append(int(svg))
+            svg_list.sort()
+
+            for i in svg_list:
+                for svg in svg_formatting:
+                    if str(i) == svg:
+                        for f in svg_formatting[svg]:
+                            for n in range(0,len(svg_formatting[svg][f])):
+                                if svg_formatting[svg][f][n] > 0:
+                                    svg_number += svg_formatting[svg][f][n]
+                                    svg_data.append(svg_number)
+                                    labels.append(f'{i}/{f}/{n+1}week')
 
             return JsonResponse({
                 "kaichem_number" : kaichem_exclude,
                 "circle_number"  : circle_number,
                 "columns_list"   : new_data_json,
-                "svg_data_list"  : '',
+                "svg_date"       : labels,
+                "svg_number"     : svg_data,
             }, status=200)
 
         except KeyError:
