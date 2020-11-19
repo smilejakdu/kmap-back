@@ -283,6 +283,9 @@ class StatisticsPage(View):
                                     svg_data.append(svg_number)
                                     labels.append(f'{i}/{f}/{n+1}week')
 
+            print(labels)
+            print(svg_data)
+
             return JsonResponse({
                 "kaichem_number" : kaichem_exclude,
                 "circle_number"  : circle_number,
