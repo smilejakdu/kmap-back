@@ -268,17 +268,17 @@ class StatisticsPage(View):
             svg_number = 0
             svg_list   = []
 
-            for svg in svg_formatting:
+            for svg in columns_result:
                 svg_list.append(int(svg))
             svg_list.sort()
 
             for i in svg_list:
-                for svg in svg_formatting:
+                for svg in columns_result:
                     if str(i) == svg:
-                        for f in svg_formatting[svg]:
-                            for n in range(0,len(svg_formatting[svg][f])):
-                                if svg_formatting[svg][f][n] > 0:
-                                    svg_number += svg_formatting[svg][f][n]
+                        for f in columns_result[svg]:
+                            for n in range(0,len(columns_result[svg][f])):
+                                if columns_result[svg][f][n] > 0:
+                                    svg_number += columns_result[svg][f][n]
                                     svg_data.append(svg_number)
                                     labels.append(f'{i}/{f}/{n+1}week')
 
