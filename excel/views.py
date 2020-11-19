@@ -260,7 +260,7 @@ class StatisticsPage(View):
                 if str(new_data[1]) not in new_data_json[str(new_data[0])]:
                     new_data_json[str(new_data[0])][str(new_data[1])] = [0]*6
                 new_data_json[str(new_data[0])][str(new_data[1])][new_data[2]-1] += 1
-            pp(new_data_json)
+
             columns_result = new_data_json
 
             # svg
