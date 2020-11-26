@@ -34,7 +34,7 @@ class ExcelView(View):
 
             Excel(
                 name = excel_name
-            ).save() # 저장 성공
+            ).save() # 저장
 
             wb = load_workbook(data, data_only = True)
             [sheetList.append(i) for i in wb.sheetnames]
