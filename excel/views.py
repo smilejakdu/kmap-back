@@ -23,7 +23,6 @@ class ExcelView(View):
 
         sheetList  = []
         excel_name = str(data)
-        print("excel_name : " , excel_name)
 
         try:
 
