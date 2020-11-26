@@ -7,8 +7,8 @@
 .direnv
 .envrc
 .idea/
-my_settings
-my_settings.py
+.my_settings
+.my_settings.py
 ### Django ###
 *.log
 *.pot
