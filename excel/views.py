@@ -16,12 +16,17 @@ from openpyxl     import load_workbook
 
 class ExcelView(View):
     def post(self, request):
-        data       = request.FILES["file"]
+        data       = request.FILES.get('file',None)
+
+        if data is None:
+            return JsonResponse({"message": "DOES_NOT_FILE"}, status = 400)
+
         sheetList  = []
         excel_name = str(data)
-        print('excel_name :' , excel_name)
+        print("excel_name : " , excel_name)
 
         try:
+
             if not data.name.endswith(".xlsx"):
                 return JsonResponse({"message": "NOT_EXCEL_FILE"}, status = 400)
 
@@ -282,9 +287,6 @@ class StatisticsPage(View):
                                     svg_number += columns_result[svg][f][n]
                                     svg_data.append(svg_number)
                                     labels.append(f'{i}/{f}/{n+1}week')
-
-            print(labels)
-            print(svg_data)
 
             return JsonResponse({
                 "kaichem_number" : kaichem_exclude,

@@ -1,11 +1,28 @@
+#DATABASES = {
+#    'default': {
+#        'ENGINE'   : 'django.db.backends.mysql',
+#        'HOST'     : '203.255.181.89',
+#        'NAME'     : 'KMAP__INFO',
+#        'USER'     : 'kmapinfo',
+#        'PASSWORD' : 'kmapinfo@!',
+#        'PORT'     : '3307',
+#        'OPTIONS'  : {'charset': 'utf8mb4'},
+#        'TEST'     :
+#            {
+#            'CHARSET'  : 'utf8mb4',
+#            'COLLATION': 'utf8mb4_general_ci',
+#            }
+#        }
+#    }
+
 DATABASES = {
     'default': {
         'ENGINE'   : 'django.db.backends.mysql',
-        'HOST'     : '203.255.181.89',
+        'HOST'     : 'localhost',
         'NAME'     : 'KMAP__INFO',
-        'USER'     : 'kmapinfo',
-        'PASSWORD' : 'kmapinfo@!',
-        'PORT'     : '3307',
+        'USER'     : 'root',
+        'PASSWORD' : '##tkakrnl12',
+        'PORT'     : '3306',
         'OPTIONS'  : {'charset': 'utf8mb4'},
         'TEST'     :
             {
@@ -14,6 +31,7 @@ DATABASES = {
             }
         }
     }
+
 
 ALGORITHM = 'HS256'
 
