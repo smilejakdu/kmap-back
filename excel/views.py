@@ -269,6 +269,15 @@ class StatisticsPage(View):
 
             columns_result = new_data_json
             ordered_d1     = dict(**dict(OrderedDict(sorted(columns_result.items(), reverse=True))))
+            print("columns_result : ",columns_result)
+            year_month_week = []
+
+#            for year in ["2020" ,"2021"]:
+#                for month in ["10","11","12","01","02","03","04"]:
+#                    for week in range(1, 7):
+#                        print(year , month ,week)
+
+
             # svg
             labels     = [""]
             svg_data   = [0]
