@@ -12,9 +12,8 @@ from django.views import View
 from django.http  import HttpResponse, JsonResponse
 from openpyxl     import load_workbook
 
-
 class ExcelView(View):
-    
+
     def post(self, request):
         data       = request.FILES.get('file',None)
 
@@ -247,7 +246,7 @@ class StatisticsPage(View):
                      objects.
                      exclude(KaiChem_ID__in=["DMSO1","DMSO2" ,"Niclo1","Niclo2"]))
 
-#            data_list = [s.Library_Prep_date for s in sheet]
+            data_list = [s.Library_Prep_date for s in sheet]
             new_data_list       = []
             new_data_json       = dict()
 
