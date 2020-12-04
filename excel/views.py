@@ -1,16 +1,18 @@
 import datetime
-import calendar
 import numpy as np
 import operator
 
+from math         import ceil
 from pprint       import pprint as pp
 from collections  import Counter , OrderedDict
+
 from .models      import (Excel,
                           Sheet)
 
 from django.views import View
 from django.http  import HttpResponse, JsonResponse
 from openpyxl     import load_workbook
+
 
 class ExcelView(View):
 
@@ -26,10 +28,10 @@ class ExcelView(View):
         try:
 
             if not data.name.endswith(".xlsx"):
-                return JsonResponse({"message": "NOT_EXCEL_FILE"}, status = 400)
+                return JsonResponse({"message": "NOT_EXCEL_FILE"} , status = 400)
 
             if Excel.objects.filter(name = excel_name).exists():
-                return JsonResponse({"message": "EXISTS_EXCEL"}, status = 400)
+                return JsonResponse({"message": "EXISTS_EXCEL"} , status = 400)
 
             Excel(
                 name = excel_name
@@ -215,20 +217,14 @@ class SheetDetailView(View):
             return JsonResponse({"message": e}, status=400)
 
 
-calendar.setfirstweekday(6)
+def get_week_of_month(year, month,day):
+    dt           = datetime.date(int(year),int(month),int(day))
 
+    first_day    = dt.replace(day=1)
+    dom          = dt.day
+    adjusted_dom = dom + (1 + first_day.weekday()) % 7
 
-def get_week_of_month(year, month, day):
-    year, month, day = int(year), int(month), int(day)
-    x             = np.array(calendar.monthcalendar(year, month))
-    week_of_month = np.where(x == day)[0][0] + 1
-    return week_of_month
-
-
-def get_max_week_no_of_month(year, month):
-    year, month = int(year), int(month)
-    x           = np.array(calendar.monthcalendar(year, month))
-    return len(x)
+    return int(ceil(adjusted_dom/7.0))
 
 class StatisticsPage(View):
     def get(self, request):
@@ -267,43 +263,48 @@ class StatisticsPage(View):
                     new_data_json[str(new_data[0])][str(new_data[1])] = [0]*6
                 new_data_json[str(new_data[0])][str(new_data[1])][new_data[2]-1] += 1
 
-            columns_result = new_data_json
-            ordered_d1     = dict(**dict(OrderedDict(sorted(columns_result.items(), reverse=True))))
-            print("columns_result : ",columns_result)
-            year_month_week = []
-
-#            for year in ["2020" ,"2021"]:
-#                for month in ["10","11","12","01","02","03","04"]:
-#                    for week in range(1, 7):
-#                        print(year , month ,week)
-
+#            columns_result  = new_data_json
+            ordered_d1      = dict(**dict(OrderedDict(sorted(new_data_json.items(), reverse=True))))
 
             # svg
-            labels     = [""]
-            svg_data   = [0]
-            svg_number = 0
-            svg_list   = []
+            svg_year_month_labels = [
+            "2020101","2020102","2020103","2020104","2020105",
+            "2020111","2020112","2020113","2020114","2020115",
+            "2020121","2020122","2020123","2020124","2020125",
+            "2021011","2021012","2021013","2021014","2021015",
+            "2021021","2021022","2021023","2021024",
+            "2021031","2021032","2021033","2021034","2021035",
+            "2021041","2021042","2021043","2021044","2021045"]
 
-            for svg in columns_result:
+            svg_list               = []
+            svg_refactoring_labels = []
+            svg_data_list          = []
+
+            for svg_labels in svg_year_month_labels:
+                svg_refactoring_labels.append(f"{svg_labels[0:4]}년 {svg_labels[4:6]}월{svg_labels[6:]}주")
+                svg_data_list.append(0)
+
+            for svg in new_data_json:
                 svg_list.append(int(svg))
             svg_list.sort()
 
             for year in svg_list:
-                for svg in columns_result:
+                for svg in new_data_json:
                     if str(year) == svg:
-                        for month in OrderedDict(sorted(columns_result[svg].items() , key=lambda t :t[0])):
-                            for n in range(0 , len(columns_result[svg][month])):
-                                if columns_result[svg][month][n] > 0:
-                                    svg_number += columns_result[svg][month][n]
-                                    svg_data.append(svg_number)
-                                    labels.append(f'{year}년 {month}월{n+1}주')
+                        for month in OrderedDict(sorted(new_data_json[svg].items() , key=lambda t :t[0])):
+                            for n in range(0 , len(new_data_json[svg][month])):
+                                if new_data_json[svg][month][n] > 0:
+                                    svg_index                       = svg+month+str(n+1)
+                                    svg_index_result                = svg_year_month_labels.index(svg_index)
+                                    svg_sum                         = sum(svg_data_list)
+                                    svg_data_list[svg_index_result] = svg_sum + new_data_json[svg][month][n]
 
             return JsonResponse({
                 "kaichem_number" : kaichem_exclude,
                 "circle_number"  : circle_number,
                 "columns_list"   : ordered_d1,
-                "svg_labels"     : labels,
-                "svg_number"     : svg_data,
+                "svg_labels"     : svg_refactoring_labels,
+                "svg_data"       : svg_data_list,
             }, status=200)
 
         except KeyError:
