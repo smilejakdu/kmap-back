@@ -300,6 +300,8 @@ class StatisticsPage(View):
                                     svg_count                      += new_data_json[svg][month][n]
                                     svg_data_list[svg_index_result] = svg_count
                                 else :
+                                    svg_index                       = svg+month+str(n+1)
+                                    svg_index_result                = svg_year_month_labels.index(svg_index)
                                     svg_data_list[svg_index_result] = svg_count
 
             return JsonResponse({
