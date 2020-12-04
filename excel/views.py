@@ -279,6 +279,7 @@ class StatisticsPage(View):
             svg_list               = []
             svg_refactoring_labels = []
             svg_data_list          = []
+            svg_count = 0
 
             for svg_labels in svg_year_month_labels:
                 svg_refactoring_labels.append(f"{svg_labels[0:4]}년 {svg_labels[4:6]}월{svg_labels[6:]}주")
@@ -296,8 +297,8 @@ class StatisticsPage(View):
                                 if new_data_json[svg][month][n] > 0:
                                     svg_index                       = svg+month+str(n+1)
                                     svg_index_result                = svg_year_month_labels.index(svg_index)
-                                    svg_sum                         = sum(svg_data_list)
-                                    svg_data_list[svg_index_result] = svg_sum + new_data_json[svg][month][n]
+                                    svg_count                      += new_data_json[svg][month][n]
+                                    svg_data_list[svg_index_result] = svg_count
 
             return JsonResponse({
                 "kaichem_number" : kaichem_exclude,
