@@ -279,7 +279,7 @@ class StatisticsPage(View):
             svg_list               = []
             svg_refactoring_labels = []
             svg_data_list          = []
-            svg_count = 0
+            svg_count              = 0
 
             for svg_labels in svg_year_month_labels:
                 svg_refactoring_labels.append(f"{svg_labels[0:4]}년 {svg_labels[4:6]}월{svg_labels[6:]}주")
