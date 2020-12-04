@@ -296,11 +296,15 @@ class StatisticsPage(View):
                             for n in range(0 , len(new_data_json[svg][month])):
                                 if new_data_json[svg][month][n] > 0:
                                     print(new_data_json[svg][month][n])
+                                    svg_count += new_data_json[svg][month][n]
+                                    print(svg_count)
 #                                    svg_index                       = svg+month+str(n+1)
 #                                    svg_index_result                = svg_year_month_labels.index(svg_index)
 #                                    svg_count                      += new_data_json[svg][month][n]
 #                                    svg_data_list[svg_index_result] = svg_count
-            
+                                else:
+                                    print(svg_count)
+
             return JsonResponse({
                 "kaichem_number" : kaichem_exclude,
                 "circle_number"  : circle_number,
