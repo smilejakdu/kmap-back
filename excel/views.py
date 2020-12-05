@@ -265,6 +265,9 @@ class StatisticsPage(View):
 
 #            columns_result  = new_data_json
             ordered_d1      = dict(**dict(OrderedDict(sorted(new_data_json.items(), reverse=True))))
+            print(new_data_json)
+            for order in ordered_d1:
+                print("order  :" , order)
 
             # svg
             svg_year_month_labels = [
