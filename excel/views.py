@@ -189,12 +189,10 @@ class SheetDetailView(View):
                                       "RNA_quantity_ng",
                                       "DNA_quantity_ng"))
 
-            cols      = []
+            cols      = ["id"]
             cols_dict = []
-            cols.append("id")
-
-            [cols.append(sheet) for sheet in sheet_data[0]]
-            [cols_dict.append({"name": cols[num], "key": num}) for num in range(0, len(cols))]
+            cols      = [sheet for sheet in sheet_data[0]]
+            cols_dict = [{"name" :cols[num],"key":num} for num in range(0,len(cols))]
 
             rows = []
             for num in range(0, len(sheet_data)):
@@ -285,7 +283,6 @@ class StatisticsPage(View):
                     new_data_json[str(new_data[0])][str(new_data[1])] = [0]*6
                 new_data_json[str(new_data[0])][str(new_data[1])][new_data[2]-1] += 1
 
-#            columns_result  = new_data_json
             ordered_d1     = dict(**dict(OrderedDict(sorted(new_data_json.items()))))
             columns_array  = sorted(new_data_json.items() , reverse=True)
             columns_labels = []
@@ -303,13 +300,11 @@ class StatisticsPage(View):
                 if len(columns_data) ==8:
                     break
                 elif len(columns_data) < 8:
-                    columns_labels.insert(0,0)
+                    columns_labels.insert(0,"")
                     columns_data.insert(0,0)
                 elif len(columns_data) > 8:
                     columns_labels = columns_labels[:8]
                     columns_data   = columns_data[:8]
-
-            print("columns_result : " , columns_data)
 
             # svg
             svg_year_month_labels = [
@@ -321,38 +316,28 @@ class StatisticsPage(View):
             "2021031","2021032","2021033","2021034","2021035",
             "2021041","2021042","2021043","2021044","2021045"]
 
-            svg_list               = []
-            svg_refactoring_labels = []
-            svg_data_list          = []
-            svg_count              = 0
 
-            for svg_labels in svg_year_month_labels:
-                svg_refactoring_labels.append(f"{svg_labels[0:4]}년 {svg_labels[4:6]}월{svg_labels[6:]}주")
-                svg_data_list.append(0)
 
-            for svg in new_data_json:
-                svg_list.append(int(svg))
-            svg_list.sort()
+            svg_weeks_list      = [i for i in range(1 , len(svg_year_month_labels)+1)]
+            svg_data            = [0 for i in range(1 , len(svg_year_month_labels)+1)]
+            svg_year_month_list = []
 
-            for year in svg_list:
+            for year in sorted([int(year) for year in new_data_json]):
                 for svg in new_data_json:
                     if str(year) == svg:
                         for month in OrderedDict(sorted(new_data_json[svg].items() , key=lambda t :t[0])):
-                            for n in range(0 , len(new_data_json[svg][month])):
-                                if new_data_json[svg][month][n] > 0:
-                                    svg_count += new_data_json[svg][month][n]
-#                                    svg_index                       = svg+month+str(n+1)
-#                                    svg_index_result                = svg_year_month_labels.index(svg_index)
-#                                    svg_count                      += new_data_json[svg][month][n]
-#                                    svg_data_list[svg_index_result] = svg_count
+                            svg_year_month_list.append(f"{year}{month}")
+
+            print(svg_year_month_list) # ['201910', '201911', '202008', '202010', '202011', '202012']
 
             return JsonResponse({
-                "kaichem_number" : kaichem_exclude,
-                "circle_number"  : circle_number,
-                "columns_data"   : columns_data,
-                "columns_labels" : columns_labels,
-                "svg_labels"     : svg_refactoring_labels,
-                "svg_data"       : svg_data_list,
+                "kaichem_number"      : kaichem_exclude,
+                "circle_number"       : circle_number,
+                "columns_data"        : columns_data,
+                "columns_labels"      : columns_labels,
+                "svg_data"            : svg_data,
+                "svg_weeks_list"      : svg_weeks_list,
+                "svg_year_month_list" : svg_year_month_list,
             }, status=200)
 
         except KeyError:
