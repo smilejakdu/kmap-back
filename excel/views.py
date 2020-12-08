@@ -189,9 +189,8 @@ class SheetDetailView(View):
                                       "RNA_quantity_ng",
                                       "DNA_quantity_ng"))
 
-            cols      = ["id"]
             cols_dict = []
-            cols      = [sheet for sheet in sheet_data[0]]
+            cols      = ["id"] + [sheet for sheet in sheet_data[0]]
             cols_dict = [{"name" :cols[num],"key":num} for num in range(0,len(cols))]
 
             rows = []
