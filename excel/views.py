@@ -215,7 +215,7 @@ class SheetDetailView(View):
             return JsonResponse({"message": e}, status=400)
 
 
-def get_week_of_month(year, month,day):
+def bar_get_week_of_month(year, month,day):
     dt           = datetime.date(int(year),int(month),int(day))
 
     first_day    = dt.replace(day=1)
@@ -223,6 +223,15 @@ def get_week_of_month(year, month,day):
     adjusted_dom = dom + (1 + first_day.weekday()) % 7
 
     return int(ceil(adjusted_dom/7.0))
+
+def svg_get_week_of_month(year, month,day):
+
+    result = datetime.date(year, month, day).strftime("%V")
+    if year ==2020:
+        return int(result) % 40+1
+    elif year ==2021:
+        return int(result) + 14
+
 
 class StatisticsPage(View):
     def get(self, request):
@@ -245,7 +254,7 @@ class StatisticsPage(View):
 '20210223','20210223','20210223','20210223','20210223','20210223','20210223','20210223','20210223','20210223',
 '20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019',
 '20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019',
-'20200819','20200819','20200819','20200819','20200819','20200819','20200819','20200819','20200819','20200819',
+'20201202','20201202','20201202','20201202','20201202','20201202','20201202','20201202','20201202','20201202',
 '20201220','20201220','20201220','20201220','20201220','20201220','20201220','20201220','20201220','20201220',
 '20201120','20201120','20201120','20201120','20201120','20201120','20201120','20201120','20201120','20201120',
 '20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020',
@@ -271,8 +280,8 @@ class StatisticsPage(View):
                 year  = data[0:4]
                 month = data[4:6]
                 day   = data[6:8]
-
-                result    = get_week_of_month(year, month, day)
+            
+                result    = bar_get_week_of_month(year, month, day)
                 temp_data = [year, month, result]
                 new_data_list.append(temp_data)
 
@@ -307,39 +316,65 @@ class StatisticsPage(View):
                     columns_data   = columns_data[:8]
 
             # svg
-            svg_year_month_labels = [
-            "2020101","2020102","2020103","2020104","2020105",
-            "2020111","2020112","2020113","2020114","2020115",
-            "2020121","2020122","2020123","2020124","2020125",
-            "2021011","2021012","2021013","2021014","2021015",
-            "2021021","2021022","2021023","2021024",
-            "2021031","2021032","2021033","2021034","2021035",
-            "2021041","2021042","2021043","2021044","2021045"]
+            svg_weeks_list    = [i for i in range(1 , 32)]
 
+            svg_new_data_list       = []
+            svg_new_data_json       = dict()
+            week_number = 0
+            line_list   = dict()
 
-            labels_list = ["10", "11" , "12", "1" , "2", "3", "4"]
+            for data in data_list:
+                # formatting
+                year  = int(data[0:4])
+                month = int(data[4:6])
+                day   = int(data[6:8])
 
+                result    = svg_get_week_of_month(year, month, day)
+                temp_data = [year, month, result]
+                svg_new_data_list.append(temp_data)
 
-            svg_weeks_list      = [i for i in range(1 , len(svg_year_month_labels)+1)]
-            svg_data            = [0 for i in range(1 , len(svg_year_month_labels)+1)]
-            svg_year_month_list = []
+            for new_data in svg_new_data_list:
+                if new_data[0] not in svg_new_data_json:
+                    svg_new_data_json[new_data[0]]=dict()
 
-            for year in sorted([int(year) for year in new_data_json]):
-                for svg in new_data_json:
-                    if str(year) == svg:
-                        for month in OrderedDict(sorted(new_data_json[svg].items() , key=lambda t :t[0])):
-                            svg_year_month_list.append(f"{year}{month}")
+                if new_data[1] not in svg_new_data_json[new_data[0]]:
+                    svg_new_data_json[new_data[0]][new_data[1]] = dict()
 
-            print(svg_year_month_list) # ['201910', '201911', '202008', '202010', '202011', '202012']
+                if new_data[2] not in svg_new_data_json[new_data[0]][new_data[1]]:
+                    svg_new_data_json[new_data[0]][new_data[1]][new_data[2]] = 0
+                svg_new_data_json[new_data[0]][new_data[1]][new_data[2]] += 1
+
+            for year in OrderedDict(sorted(svg_new_data_json.items() , key=lambda t :t[0])):
+                for month in OrderedDict(sorted(svg_new_data_json[year].items() , key=lambda t :t[0])):
+                    for week in OrderedDict(sorted(svg_new_data_json[year][month].items() , key=lambda t :t[0])):
+                        if week > week_number:
+                            week_number = week
+                        if svg_new_data_json[year][month][week] > 0:
+                            line_list[week] = svg_new_data_json[year][month][week]
+
+            week_number_result = [0 for i in range(1 , week_number+1)]
+            for line in line_list:
+                week_number_result[line-1]=line_list[line]
+            print(week_number_result)
+
+            line_count       = 0
+            last_result_list = []
+
+            for i in week_number_result:
+                line_count += i
+                last_result_list.append(line_count)
+
+            print(last_result_list)
+            print(len(last_result_list))
+            print(svg_weeks_list)
 
             return JsonResponse({
                 "kaichem_number"      : kaichem_exclude,
                 "circle_number"       : circle_number,
                 "columns_data"        : columns_data,
                 "columns_labels"      : columns_labels,
-                "svg_data"            : svg_data,
+                "svg_data"            : last_result_list,
                 "svg_weeks_list"      : svg_weeks_list,
-                "svg_year_month_list" : labels_list,
             }, status=200)
 
         except KeyError:
@@ -347,3 +382,5 @@ class StatisticsPage(View):
 
         except Exception as e:
             return JsonResponse({"message": e}, status=400)
+
+
