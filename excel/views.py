@@ -93,15 +93,16 @@ class ExcelView(View):
 
                 return JsonResponse({"data": excel_data}, status=200)
 
-            excel_data = (Excel.
+            excel_data  = (Excel.
                           objects.
                           all().
                           values())
+            
             excel_count = Excel.objects.count()
 
             return JsonResponse({"data": {
-                "excel_data": list(excel_data),
-                "excel_count": excel_count
+                "excel_data"  : list(excel_data),
+                "excel_count" : excel_count
             }}, status=200)
 
         except KeyError:
@@ -236,6 +237,7 @@ class StatisticsPage(View):
     def get(self, request):
 
         try:
+            
             # circle
             kaichem_exclude = Sheet.objects.exclude(KaiChem_ID__in=["DMSO1",
                                                                     "DMSO2",
@@ -243,137 +245,128 @@ class StatisticsPage(View):
                                                                     "Niclo2"]).values("KaiChem_ID").distinct().count()
             circle_number   = kaichem_exclude * 100 // 1364
 
-            # columns
+            # bar
             sheet = (Sheet.
                      objects.
                      exclude(KaiChem_ID__in=["DMSO1","DMSO2" ,"Niclo1","Niclo2"]))
-            data_list = ['20201019','20201019','20201019',
-'20210319', '20210319','20210319','20210319','20210319','20210319','20210319','20210319','20210319','20210319','20210319','20210319','20210319','20210319','20210319','20210319','20201119','20201119','20201119','20201119','20201119','20201119','20201119','20201119','20201119','20201119','20201119','20201119','20201119','20201119',
-'20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019', '20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019',
-'20210223','20210223','20210223','20210223','20210223','20210223','20210223','20210223','20210223','20210223',
-'20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019',
-'20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019','20201019',
-'20201202','20201202','20201202','20201202','20201202','20201202','20201202','20201202','20201202','20201202',
-'20201220','20201220','20201220','20201220','20201220','20201220','20201220','20201220','20201220','20201220',
-'20201120','20201120','20201120','20201120','20201120','20201120','20201120','20201120','20201120','20201120',
-'20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020',
-'20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020',
-'20210120','20210120','20210120','20210120','20210120','20210120','20210120','20210120','20210120','20210120',
-'20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020',
-'20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020',
-'20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020','20201020',
-'20201020','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021',
-'20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021',
-'20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021',
-'20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021',
-'20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021',
-'20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021','20201021']
+
+            data_list       = [s.Library_Prep_date for s in sheet]
+            data_list2      = [s.Sample_sending_date_LAS for s in sheet]
+            total_data_list = [data_list , data_list2]
+
+            result_columns_data = [[],[]]
+
+            for tdl in range(0,len(total_data_list)):
+                new_data_json = dict()
+                new_data_list = []
+                
+                print("123 : ",total_data_list[tdl])
+
+                for data in total_data_list[tdl]:
+                    
+                    year  = data[0:4]
+                    month = data[4:6]
+                    day   = data[6:8]
+
+                    result    = bar_get_week_of_month(year, month, day)
+                    temp_data = [year, month, result]
+                    new_data_list.append(temp_data)
+
+                for new_data in new_data_list:
+                    if str(new_data[0]) not in new_data_json:
+                        new_data_json[str(new_data[0])] = dict()
+                    if str(new_data[1]) not in new_data_json[str(new_data[0])]:
+                        new_data_json[str(new_data[0])][str(new_data[1])] = [0]*6
+                    new_data_json[str(new_data[0])][str(new_data[1])][new_data[2]-1] += 1
+
+                ordered_d1          = dict(**dict(OrderedDict(sorted(new_data_json.items()))))
+                columns_array       = sorted(new_data_json.items() , reverse=True)
+                columns_labels      = []
 
 
-#            data_list = [s.Library_Prep_date for s in sheet]
-            new_data_list       = []
-            new_data_json       = dict()
+                for year in ordered_d1:
+                    for month in OrderedDict(sorted(new_data_json[year].items() , key=lambda t :t[0])):
+                        for week in range(0 , len(new_data_json[year][month])):
+                            if new_data_json[year][month][week] !=0:
+                                result_columns_data[tdl].append(new_data_json[year][month][week])
+                                columns_labels.append(f"{year}년{month} {week+1}주")
 
-            for data in data_list:
-                # formatting
-                year  = data[0:4]
-                month = data[4:6]
-                day   = data[6:8]
-            
-                result    = bar_get_week_of_month(year, month, day)
-                temp_data = [year, month, result]
-                new_data_list.append(temp_data)
+                while True:
 
-            for new_data in new_data_list:
-                if str(new_data[0]) not in new_data_json:
-                    new_data_json[str(new_data[0])] = dict()
-                if str(new_data[1]) not in new_data_json[str(new_data[0])]:
-                    new_data_json[str(new_data[0])][str(new_data[1])] = [0]*6
-                new_data_json[str(new_data[0])][str(new_data[1])][new_data[2]-1] += 1
-
-            ordered_d1     = dict(**dict(OrderedDict(sorted(new_data_json.items()))))
-            columns_array  = sorted(new_data_json.items() , reverse=True)
-            columns_labels = []
-            columns_data   = []
-
-            for year in ordered_d1:
-                for month in OrderedDict(sorted(new_data_json[year].items() , key=lambda t :t[0])):
-                    for week in range(0 , len(new_data_json[year][month])):
-                        if new_data_json[year][month][week] !=0:
-                            columns_data.append(new_data_json[year][month][week])
-                            columns_labels.append(f"{year}년{month} {week+1}주")
-
-            while True:
-
-                if len(columns_data) ==8:
-                    break
-                elif len(columns_data) < 8:
-                    columns_labels.insert(0,"")
-                    columns_data.insert(0,0)
-                elif len(columns_data) > 8:
-                    columns_labels = columns_labels[:8]
-                    columns_data   = columns_data[:8]
+                    if len(result_columns_data[tdl]) ==8:
+                        break
+                    elif len(result_columns_data[tdl]) < 8:
+                        columns_labels.insert(0,"")
+                        result_columns_data[tdl].insert(0,0)
+                    elif len(result_columns_data[tdl]) > 8:
+                        columns_labels = columns_labels[:8]
+                        result_columns_data[tdl]   = result_columns_data[tdl][:8]
 
             # svg
             svg_weeks_list    = [i for i in range(1 , 32)]
+            svg_last_result_list = [[],[]]
 
-            svg_new_data_list       = []
-            svg_new_data_json       = dict()
-            week_number = 0
-            line_list   = dict()
+            for tdl in range(0,len(total_data_list)):
 
-            for data in data_list:
-                # formatting
-                year  = int(data[0:4])
-                month = int(data[4:6])
-                day   = int(data[6:8])
+                svg_new_data_list = []
+                svg_new_data_json = dict()
+                week_number       = 0
+                line_list         = dict()
 
-                result    = svg_get_week_of_month(year, month, day)
-                temp_data = [year, month, result]
-                svg_new_data_list.append(temp_data)
+                for data in total_data_list[tdl]:
+                    # formatting
+                    year  = int(data[0:4])
+                    month = int(data[4:6])
+                    day   = int(data[6:8])
 
-            for new_data in svg_new_data_list:
-                if new_data[0] not in svg_new_data_json:
-                    svg_new_data_json[new_data[0]]=dict()
+                    result    = svg_get_week_of_month(year, month, day)
+                    temp_data = [year, month, result]
+                    svg_new_data_list.append(temp_data)
 
-                if new_data[1] not in svg_new_data_json[new_data[0]]:
-                    svg_new_data_json[new_data[0]][new_data[1]] = dict()
+                for new_data in svg_new_data_list:
+                    if new_data[0] not in svg_new_data_json:
+                        svg_new_data_json[new_data[0]]=dict()
 
-                if new_data[2] not in svg_new_data_json[new_data[0]][new_data[1]]:
-                    svg_new_data_json[new_data[0]][new_data[1]][new_data[2]] = 0
-                svg_new_data_json[new_data[0]][new_data[1]][new_data[2]] += 1
+                    if new_data[1] not in svg_new_data_json[new_data[0]]:
+                        svg_new_data_json[new_data[0]][new_data[1]] = dict()
 
-            for year in OrderedDict(sorted(svg_new_data_json.items() , key=lambda t :t[0])):
-                for month in OrderedDict(sorted(svg_new_data_json[year].items() , key=lambda t :t[0])):
-                    for week in OrderedDict(sorted(svg_new_data_json[year][month].items() , key=lambda t :t[0])):
-                        if week > week_number:
-                            week_number = week
-                        if svg_new_data_json[year][month][week] > 0:
-                            line_list[week] = svg_new_data_json[year][month][week]
+                    if new_data[2] not in svg_new_data_json[new_data[0]][new_data[1]]:
+                        svg_new_data_json[new_data[0]][new_data[1]][new_data[2]] = 0
+                    svg_new_data_json[new_data[0]][new_data[1]][new_data[2]] += 1
 
-            week_number_result = [0 for i in range(1 , week_number+1)]
-            for line in line_list:
-                week_number_result[line-1]=line_list[line]
-            print(week_number_result)
+                for year in OrderedDict(sorted(svg_new_data_json.items() , key=lambda t :t[0])):
+                    for month in OrderedDict(sorted(svg_new_data_json[year].items() , key=lambda t :t[0])):
+                        for week in OrderedDict(sorted(svg_new_data_json[year][month].items() , key=lambda t :t[0])):
+                            if week > week_number:
+                                week_number = week
+                            if svg_new_data_json[year][month][week] > 0:
+                                line_list[week] = svg_new_data_json[year][month][week]
 
-            line_count       = 0
-            last_result_list = []
+                week_number_result = [0 for i in range(1 , week_number+1)]
+                for line in line_list:
+                    week_number_result[line-1]=line_list[line]
 
-            for i in week_number_result:
-                line_count += i
-                last_result_list.append(line_count)
+                line_count           = 0
 
-            print(last_result_list)
-            print(len(last_result_list))
-            print(svg_weeks_list)
+                for i in week_number_result:
+                    line_count += i
+                    svg_last_result_list[tdl].append(line_count)
+
+            print("bar1 :",result_columns_data[0])
+            print("bar2 :", result_columns_data[1])
+
+            print("line1 :" ,svg_last_result_list[0])
+            print("line2 :" ,svg_last_result_list[1])
 
             return JsonResponse({
-                "kaichem_number"      : kaichem_exclude,
-                "circle_number"       : circle_number,
-                "columns_data"        : columns_data,
-                "columns_labels"      : columns_labels,
-                "svg_data"            : last_result_list,
-                "svg_weeks_list"      : svg_weeks_list,
+                "kaichem_number" : kaichem_exclude,
+                "circle_number"  : circle_number,
+                "columns_labels" : columns_labels,
+                "columns_data"   : result_columns_data[0],
+                "columns_data2"  : result_columns_data[1],
+                "svg_data"       : svg_last_result_list[0],
+                "svg_data2"      : svg_last_result_list[1],
+                "svg_weeks_list" : svg_weeks_list,
             }, status=200)
 
         except KeyError:
