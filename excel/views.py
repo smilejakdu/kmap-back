@@ -237,7 +237,7 @@ class StatisticsPage(View):
     def get(self, request):
 
         try:
-            
+
             # circle
             kaichem_exclude = Sheet.objects.exclude(KaiChem_ID__in=["DMSO1",
                                                                     "DMSO2",
@@ -253,17 +253,17 @@ class StatisticsPage(View):
             data_list       = [s.Library_Prep_date for s in sheet]
             data_list2      = [s.Sample_sending_date_LAS for s in sheet]
             total_data_list = [data_list , data_list2]
-
             result_columns_data = [[],[]]
-
+            columns_labels      = [[],[]]
+            
             for tdl in range(0,len(total_data_list)):
                 new_data_json = dict()
                 new_data_list = []
-                
-                print("123 : ",total_data_list[tdl])
 
                 for data in total_data_list[tdl]:
-                    
+                    if data is None:
+                        break
+
                     year  = data[0:4]
                     month = data[4:6]
                     day   = data[6:8]
@@ -281,7 +281,6 @@ class StatisticsPage(View):
 
                 ordered_d1          = dict(**dict(OrderedDict(sorted(new_data_json.items()))))
                 columns_array       = sorted(new_data_json.items() , reverse=True)
-                columns_labels      = []
 
 
                 for year in ordered_d1:
@@ -289,18 +288,27 @@ class StatisticsPage(View):
                         for week in range(0 , len(new_data_json[year][month])):
                             if new_data_json[year][month][week] !=0:
                                 result_columns_data[tdl].append(new_data_json[year][month][week])
-                                columns_labels.append(f"{year}년{month} {week+1}주")
+                                columns_labels[tdl].append(f"{year}{month}{week+1}")
 
                 while True:
 
                     if len(result_columns_data[tdl]) ==8:
                         break
                     elif len(result_columns_data[tdl]) < 8:
-                        columns_labels.insert(0,"")
+                        columns_labels[tdl].insert(0,"")
                         result_columns_data[tdl].insert(0,0)
                     elif len(result_columns_data[tdl]) > 8:
-                        columns_labels = columns_labels[:8]
-                        result_columns_data[tdl]   = result_columns_data[tdl][:8]
+                        columns_labels[tdl]      = columns_labels[tdl][:8]
+                        result_columns_data[tdl] = result_columns_data[tdl][:8]
+            columns_labels_result= []
+
+            for column in columns_labels:
+                for c in column:
+                    if len(c) !=0 and int(c) not in columns_labels_result:
+                        columns_labels_result.append(int(c))
+
+            columns_labels_data = [f"{str(columns)[:4]}{str(columns)[4:6]} {str(columns)[6:]}주" for columns in sorted(columns_labels_result)]
+#           ['202010 2주', '202010 3주', '202012 1주', '202102 2주', '202103 1주']
 
             # svg
             svg_weeks_list    = [i for i in range(1 , 32)]
@@ -314,7 +322,9 @@ class StatisticsPage(View):
                 line_list         = dict()
 
                 for data in total_data_list[tdl]:
-                    # formatting
+                    if data is None:
+                        break
+
                     year  = int(data[0:4])
                     month = int(data[4:6])
                     day   = int(data[6:8])
@@ -352,16 +362,10 @@ class StatisticsPage(View):
                     line_count += i
                     svg_last_result_list[tdl].append(line_count)
 
-            print("bar1 :",result_columns_data[0])
-            print("bar2 :", result_columns_data[1])
-
-            print("line1 :" ,svg_last_result_list[0])
-            print("line2 :" ,svg_last_result_list[1])
-
             return JsonResponse({
                 "kaichem_number" : kaichem_exclude,
                 "circle_number"  : circle_number,
-                "columns_labels" : columns_labels,
+                "columns_labels" : columns_labels_data,
                 "columns_data"   : result_columns_data[0],
                 "columns_data2"  : result_columns_data[1],
                 "svg_data"       : svg_last_result_list[0],
