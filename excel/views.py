@@ -310,7 +310,7 @@ class StatisticsPage(View):
                                 columns_index = columns_labels_result.index(int(str(year)+str(month)+ str(week+1)))
                                 bar_result[index][columns_index] = new_data_json[index][str(year)][str(month)][week]
 
-            columns_labels_data = [f"{str(columns)[:4]}{str(columns)[4:6]} {str(columns)[6:]}주" for columns in sorted(columns_labels_result)]
+            columns_labels_data = [f"{str(columns)[:4]}-{str(columns)[4:6]} {str(columns)[6:]}주" for columns in sorted(columns_labels_result)]
 
             # svg
             svg_weeks_list       = [i for i in range(1 , 32)]
