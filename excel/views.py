@@ -215,14 +215,6 @@ class SheetDetailView(View):
             return JsonResponse({"message": e}, status=400)
 
 
-def bar_get_week_of_month(year, month,day):
-    dt           = datetime.date(int(year),int(month),int(day))
-
-    first_day    = dt.replace(day=1)
-    dom          = dt.day
-    adjusted_dom = dom + (1 + first_day.weekday()) % 7
-
-    return int(ceil(adjusted_dom/7.0))
 
 def svg_get_week_of_month(year, month,day):
 
@@ -232,6 +224,14 @@ def svg_get_week_of_month(year, month,day):
     elif year ==2021:
         return int(result) + 14
 
+def bar_get_week_of_month(year , month ,day):
+    dt           = datetime.date(year , month, day)
+
+    first_day    = dt.replace(day=1)
+    dom          = dt.day
+    adjusted_dom = dom + (1 + first_day.weekday()) % 7
+
+    return int(ceil(adjusted_dom/7.0))
 
 class StatisticsPage(View):
     def get(self, request):
@@ -250,49 +250,39 @@ class StatisticsPage(View):
                      objects.
                      exclude(KaiChem_ID__in=["DMSO1","DMSO2" ,"Niclo1","Niclo2"]))
 
-            data_list       = [s.Library_Prep_date for s in sheet]
-            data_list2      = [s.Sample_sending_date_LAS for s in sheet]
-            total_data_list = [data_list , data_list2]
-            result_columns_data = [[],[]]
-            columns_labels      = [[],[]]
-            
+            total_data_list                                                   = [[s.Library_Prep_date for s in sheet] ,
+                                                                                 [s.Sample_sending_date_LAS for s in sheet]]
+
+            result_columns_data , columns_labels , bar_result , new_data_json = [[],[]] ,[[],[]] , [[],[]] , [{},{}]
+
             for tdl in range(0,len(total_data_list)):
-                new_data_json = dict()
                 new_data_list = []
 
                 for data in total_data_list[tdl]:
                     if data is None:
                         break
 
-                    year  = data[0:4]
-                    month = data[4:6]
-                    day   = data[6:8]
-
-                    result    = bar_get_week_of_month(year, month, day)
-                    temp_data = [year, month, result]
-                    new_data_list.append(temp_data)
+                    year , month , day = data[0:4] , data[4:6] , data[6:8]
+                    new_data_list.append([year, month, bar_get_week_of_month(int(year), int(month), int(day))])
 
                 for new_data in new_data_list:
-                    if str(new_data[0]) not in new_data_json:
-                        new_data_json[str(new_data[0])] = dict()
-                    if str(new_data[1]) not in new_data_json[str(new_data[0])]:
-                        new_data_json[str(new_data[0])][str(new_data[1])] = [0]*6
-                    new_data_json[str(new_data[0])][str(new_data[1])][new_data[2]-1] += 1
+                    if str(new_data[0]) not in new_data_json[tdl]:
+                        new_data_json[tdl][str(new_data[0])] = dict()
+                    if str(new_data[1]) not in new_data_json[tdl][str(new_data[0])]:
+                        new_data_json[tdl][str(new_data[0])][str(new_data[1])] = [0]*5
+                    new_data_json[tdl][str(new_data[0])][str(new_data[1])][new_data[2]-1] += 1
 
-                ordered_d1          = dict(**dict(OrderedDict(sorted(new_data_json.items()))))
-                columns_array       = sorted(new_data_json.items() , reverse=True)
-
+                ordered_d1 = dict(**dict(OrderedDict(sorted(new_data_json[tdl].items()))))
 
                 for year in ordered_d1:
-                    for month in OrderedDict(sorted(new_data_json[year].items() , key=lambda t :t[0])):
-                        for week in range(0 , len(new_data_json[year][month])):
-                            if new_data_json[year][month][week] !=0:
-                                result_columns_data[tdl].append(new_data_json[year][month][week])
+                    for month in OrderedDict(sorted(new_data_json[tdl][year].items() , key=lambda t :t[0])):
+                        for week in range(0 , len(new_data_json[tdl][year][month])):
+                            if new_data_json[tdl][year][month][week] !=0:
+                                result_columns_data[tdl].append(new_data_json[tdl][year][month][week])
                                 columns_labels[tdl].append(f"{year}{month}{week+1}")
-
                 while True:
 
-                    if len(result_columns_data[tdl]) ==8:
+                    if len(result_columns_data[tdl]) == 8:
                         break
                     elif len(result_columns_data[tdl]) < 8:
                         columns_labels[tdl].insert(0,"")
@@ -300,18 +290,30 @@ class StatisticsPage(View):
                     elif len(result_columns_data[tdl]) > 8:
                         columns_labels[tdl]      = columns_labels[tdl][:8]
                         result_columns_data[tdl] = result_columns_data[tdl][:8]
-            columns_labels_result= []
+
+            columns_labels_result = []
 
             for column in columns_labels:
                 for c in column:
                     if len(c) !=0 and int(c) not in columns_labels_result:
                         columns_labels_result.append(int(c))
 
+            for bar in range(0 , len(bar_result)):
+                for i in range(0 , len(columns_labels_result)):
+                    bar_result[bar].append(0)
+
+            for index in range(0 , len(new_data_json)):
+                for year in new_data_json[index]:
+                    for month in OrderedDict(sorted(new_data_json[index][year].items() , key=lambda t :t[0])):
+                        for week in range(0 , len(new_data_json[index][year][month])):
+                            if new_data_json[index][str(year)][str(month)][week] > 0:
+                                columns_index = columns_labels_result.index(int(str(year)+str(month)+ str(week+1)))
+                                bar_result[index][columns_index] = new_data_json[index][str(year)][str(month)][week]
+
             columns_labels_data = [f"{str(columns)[:4]}{str(columns)[4:6]} {str(columns)[6:]}주" for columns in sorted(columns_labels_result)]
-#           ['202010 2주', '202010 3주', '202012 1주', '202102 2주', '202103 1주']
 
             # svg
-            svg_weeks_list    = [i for i in range(1 , 32)]
+            svg_weeks_list       = [i for i in range(1 , 32)]
             svg_last_result_list = [[],[]]
 
             for tdl in range(0,len(total_data_list)):
@@ -325,13 +327,8 @@ class StatisticsPage(View):
                     if data is None:
                         break
 
-                    year  = int(data[0:4])
-                    month = int(data[4:6])
-                    day   = int(data[6:8])
-
-                    result    = svg_get_week_of_month(year, month, day)
-                    temp_data = [year, month, result]
-                    svg_new_data_list.append(temp_data)
+                    year , month , day = int(data[0:4]) ,int(data[4:6]) , int(data[6:8])
+                    svg_new_data_list.append([year, month, svg_get_week_of_month(year, month, day)])
 
                 for new_data in svg_new_data_list:
                     if new_data[0] not in svg_new_data_json:
@@ -366,8 +363,8 @@ class StatisticsPage(View):
                 "kaichem_number" : kaichem_exclude,
                 "circle_number"  : circle_number,
                 "columns_labels" : columns_labels_data,
-                "columns_data"   : result_columns_data[0],
-                "columns_data2"  : result_columns_data[1],
+                "columns_data"   : bar_result[0],
+                "columns_data2"  : bar_result[1],
                 "svg_data"       : svg_last_result_list[0],
                 "svg_data2"      : svg_last_result_list[1],
                 "svg_weeks_list" : svg_weeks_list,
