@@ -20,13 +20,7 @@ class LoginView(View):
                 if bcrypt.checkpw(data['password'].encode('utf-8'),
                                   user.password.encode('utf-8')):
 
-                    token = jwt.encode({'user_id': data['user_id']},
-                                           SECRET_KEY['secret'],
-                                           algorithm = ALGORITHM).decode()
-
-                    return JsonResponse({'access': token},
-                                        status       = 200,
-                                        content_type = "application/json")
+                    return HttpResponse(status=200)
 
                 return HttpResponse(status = 401)
 
