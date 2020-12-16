@@ -280,16 +280,6 @@ class StatisticsPage(View):
                             if new_data_json[tdl][year][month][week] !=0:
                                 result_columns_data[tdl].append(new_data_json[tdl][year][month][week])
                                 columns_labels[tdl].append(f"{year}{month}{week+1}")
-                while True:
-
-                    if len(result_columns_data[tdl]) == 8:
-                        break
-                    elif len(result_columns_data[tdl]) < 8:
-                        columns_labels[tdl].insert(0,"")
-                        result_columns_data[tdl].insert(0,0)
-                    elif len(result_columns_data[tdl]) > 8:
-                        columns_labels[tdl]      = columns_labels[tdl][:8]
-                        result_columns_data[tdl] = result_columns_data[tdl][:8]
 
             columns_labels_result = []
 
@@ -311,6 +301,20 @@ class StatisticsPage(View):
                                 bar_result[index][columns_index] = new_data_json[index][str(year)][str(month)][week]
 
             columns_labels_data = [f"{str(columns)[:4]}-{str(columns)[4:6]} {str(columns)[6:]}주" for columns in sorted(columns_labels_result)]
+
+            while True:
+
+                if len(columns_labels_data) == 8:
+                    break
+                elif len(columns_labels_data) < 8:
+                    columns_labels_data.insert(0,"")
+                    bar_result[0].insert(0,0)
+                    bar_result[1].insert(0,0)
+                elif len(result_columns_data[tdl]) > 8:
+                    columns_labels_data = columns_labels_data[:8]
+                    bar_result[0]       = columns_labels_data[:8]
+                    bar_result[1]       = columns_labels_data[:8]
+
 
             # svg
             svg_weeks_list       = [i for i in range(1 , 32)]
