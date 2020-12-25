@@ -2,11 +2,11 @@ import datetime
 import numpy as np
 import operator
 
-from math         import ceil
-from pprint       import pprint as pp
-from collections  import Counter , OrderedDict
+from math        import ceil
+from pprint      import pprint as pp
+from collections import Counter , OrderedDict
 
-from .models      import (Excel,
+from .models import (Excel,
                           Sheet)
 
 from django.views import View
@@ -300,12 +300,9 @@ class StatisticsPage(View):
                                 columns_index = columns_labels_result.index(int(str(year)+str(month)+ str(week+1)))
                                 bar_result[index][columns_index] = new_data_json[index][str(year)][str(month)][week]
 
-            columns_labels_data = [f"{str(columns)[:4]}-{str(columns)[4:6]} {str(columns)[6:]}주" for columns in sorted(columns_labels_result)]
+            columns_labels_data  = [f"{str(columns)[:4]}-{str(columns)[4:6]} {str(columns)[6:]}주" for columns in sorted(columns_labels_result)]
 
-            while True:
-
-                if len(columns_labels_data) == 8:
-                    break
+            while len(columns_labels_data) != 8: # 길이가 8 이 아니라면 
                 elif len(columns_labels_data) < 8:
                     columns_labels_data.insert(0,"")
                     bar_result[0].insert(0,0)
@@ -314,7 +311,6 @@ class StatisticsPage(View):
                     columns_labels_data = columns_labels_data[:8]
                     bar_result[0]       = columns_labels_data[:8]
                     bar_result[1]       = columns_labels_data[:8]
-
 
             # svg
             svg_weeks_list       = [i for i in range(1 , 32)]
