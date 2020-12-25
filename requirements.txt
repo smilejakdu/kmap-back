@@ -13,7 +13,7 @@ chardet==3.0.4
 decorator==4.4.2
 defusedxml==0.6.0
 distlib==0.3.0
-Django==3.0.3
+Django==3.0.7
 django-cors-headers==3.2.1
 django-extensions==2.2.9
 entrypoints==0.3
@@ -44,7 +44,7 @@ mysql-connector-python==8.0.18
 mysqlclient==1.4.6
 nbconvert==5.6.1
 nbformat==5.0.6
-notebook==6.0.3
+notebook==6.1.5
 numpy==1.18.1
 openpyxl==3.0.3
 packaging==20.3
