@@ -303,7 +303,7 @@ class StatisticsPage(View):
             columns_labels_data  = [f"{str(columns)[:4]}-{str(columns)[4:6]} {str(columns)[6:]}주" for columns in sorted(columns_labels_result)]
 
             while len(columns_labels_data) != 8: # 길이가 8 이 아니라면 
-                elif len(columns_labels_data) < 8:
+                if len(columns_labels_data) < 8:
                     columns_labels_data.insert(0,"")
                     bar_result[0].insert(0,0)
                     bar_result[1].insert(0,0)
