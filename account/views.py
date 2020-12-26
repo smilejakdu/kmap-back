@@ -1,10 +1,8 @@
 import json
-import jwt
 import bcrypt
 
 from django.views               import View
 from django.http                import HttpResponse , JsonResponse
-from kmap_info_back.my_settings import SECRET_KEY , ALGORITHM
 from .models                    import Account
 
 

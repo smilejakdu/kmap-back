@@ -28,5 +28,3 @@ class Compound(models.Model):
         db_table = "compound_info"
 
 
-
-

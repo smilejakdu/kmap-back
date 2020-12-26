@@ -6,7 +6,7 @@ from math        import ceil
 from pprint      import pprint as pp
 from collections import Counter , OrderedDict
 
-from .models import (Excel,
+from .models      import (Excel,
                           Sheet)
 
 from django.views import View
@@ -35,7 +35,7 @@ class ExcelView(View):
 
             Excel(
                 name = excel_name
-            ).save() # 저장
+            ).save()
 
             wb = load_workbook(data, data_only = True)
             [sheetList.append(i) for i in wb.sheetnames]
@@ -97,7 +97,7 @@ class ExcelView(View):
                           objects.
                           all().
                           values())
-            
+
             excel_count = Excel.objects.count()
 
             return JsonResponse({"data": {
@@ -118,7 +118,7 @@ class ExcelView(View):
 class ExcelDetailView(View):
     def get(self, request, excel_name):
 
-        if not Excel.objects.filter(name=excel_name).exists():
+        if not Excel.objects.filter(name = excel_name).exists():
             return JsonResponse({"message": "DOESNOT_EXCEL"}, status=400)
 
         try:
@@ -160,10 +160,11 @@ class ExcelDetailView(View):
 
 class SheetDetailView(View):
     def get(self, request, excel_name, sheet_name):
-        if not Excel.objects.filter(name=excel_name).exists():
+
+        if not Excel.objects.filter(name = excel_name).exists():
             return JsonResponse({"message": "DOESNOT_EXCEL"}, status=400)
 
-        if not Sheet.objects.filter(name=sheet_name).exists():
+        if not Sheet.objects.filter(name = sheet_name).exists():
             return JsonResponse({"message": "DOESNOT_SHEET"}, status=400)
 
         try:
@@ -213,7 +214,6 @@ class SheetDetailView(View):
 
         except Exception as e:
             return JsonResponse({"message": e}, status=400)
-
 
 
 def svg_get_week_of_month(year, month,day):
@@ -302,7 +302,7 @@ class StatisticsPage(View):
 
             columns_labels_data  = [f"{str(columns)[:4]}-{str(columns)[4:6]} {str(columns)[6:]}주" for columns in sorted(columns_labels_result)]
 
-            while len(columns_labels_data) != 8: # 길이가 8 이 아니라면 
+            while len(columns_labels_data) != 8:
                 if len(columns_labels_data) < 8:
                     columns_labels_data.insert(0,"")
                     bar_result[0].insert(0,0)
@@ -371,7 +371,7 @@ class StatisticsPage(View):
             }, status=200)
 
         except KeyError:
-            return HttpResponse(status=400)
+            return JsonResponse({"message": "INVALID_KEY"}, status=400)
 
         except Exception as e:
             return JsonResponse({"message": e}, status=400)
