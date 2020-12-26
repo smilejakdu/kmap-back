@@ -30,5 +30,3 @@ class LoginView(View):
         except Account.DoesNotExist:
             return JsonResponse({"message": "INVALID_USER"}, status = 400)
 
-
-

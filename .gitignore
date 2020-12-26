@@ -7,7 +7,6 @@
 .direnv
 .envrc
 .idea/
-my_settings.py
 ### Django ###
 *.log
 *.pot
