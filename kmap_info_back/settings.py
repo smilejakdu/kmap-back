@@ -67,11 +67,11 @@ WSGI_APPLICATION = 'kmap_info_back.wsgi.application'
 DATABASES = {
     'default' : {
         'ENGINE'   : 'django.db.backends.mysql',
-        'HOST'     : 'localhost',
+        'HOST'     : '203.255.181.89',
         'NAME'     : 'KMAP__INFO',
-        'USER'     : 'root',
-        'PASSWORD' : 'kaipharm1113',
-        'PORT'     : '3306',
+        'USER'     : 'kmapinfo',
+        'PASSWORD' : 'kmapinfo@!',
+        'PORT'     : '3307',
         'TEST'     :
             {
                 'CHARSET'   : 'utfmb4',

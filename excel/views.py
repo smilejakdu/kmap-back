@@ -235,6 +235,7 @@ def bar_get_week_of_month(year , month ,day):
 
 class StatisticsPage(View):
     def get(self, request):
+        print("StatisticsPage: 들어오나요")
 
         try:
 
@@ -254,7 +255,7 @@ class StatisticsPage(View):
                                                                                  [s.Sample_sending_date_LAS for s in sheet]]
 
             result_columns_data , columns_labels , bar_result , new_data_json = [[],[]] ,[[],[]] , [[],[]] , [{},{}]
-
+            print(2)
             for tdl in range(0,len(total_data_list)):
                 new_data_list = []
 
@@ -305,17 +306,18 @@ class StatisticsPage(View):
             while len(columns_labels_data) != 8:
                 if len(columns_labels_data) < 8:
                     columns_labels_data.insert(0,"")
-                    bar_result[0].insert(0,0)
-                    bar_result[1].insert(0,0)
-                elif len(result_columns_data[tdl]) > 8:
-                    columns_labels_data = columns_labels_data[:8]
-                    bar_result[0]       = columns_labels_data[:8]
-                    bar_result[1]       = columns_labels_data[:8]
-            print("bar labels" , columns_labels_data)
-            print("bar data" , bar_result)
+                elif len(columns_labels_data) > 8:
+                    columns_labels_data = columns_labels_data[-8:]
+
+            for bar_index in range(0,len(bar_result)):
+                while len(columns_labels_data) != 8:
+                    if len(columns_labels_data) < 8:
+                        bar_result[bar_index].insert(0,0)
+                    elif len(columns_labels_data) > 8:
+                        bar_result[bar_index] = columns_labels_data[-8:]
+
             # svg
             svg_weeks_list       = [i for i in range(1 , 32)]
-            print("svg_weeks_list : " , svg_weeks_list)
             svg_last_result_list = [[],[]]
 
             for tdl in range(0,len(total_data_list)):
@@ -360,8 +362,6 @@ class StatisticsPage(View):
                 for i in week_number_result:
                     line_count += i
                     svg_last_result_list[tdl].append(line_count)
-
-            print(svg_last_result_list)
 
             return JsonResponse({
                 "kaichem_number" : kaichem_exclude,
