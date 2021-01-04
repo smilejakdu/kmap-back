@@ -311,9 +311,11 @@ class StatisticsPage(View):
                     columns_labels_data = columns_labels_data[:8]
                     bar_result[0]       = columns_labels_data[:8]
                     bar_result[1]       = columns_labels_data[:8]
-
+            print("bar labels" , columns_labels_data)
+            print("bar data" , bar_result)
             # svg
             svg_weeks_list       = [i for i in range(1 , 32)]
+            print("svg_weeks_list : " , svg_weeks_list)
             svg_last_result_list = [[],[]]
 
             for tdl in range(0,len(total_data_list)):
@@ -358,6 +360,8 @@ class StatisticsPage(View):
                 for i in week_number_result:
                     line_count += i
                     svg_last_result_list[tdl].append(line_count)
+
+            print(svg_last_result_list)
 
             return JsonResponse({
                 "kaichem_number" : kaichem_exclude,
