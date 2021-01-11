@@ -64,30 +64,14 @@ WSGI_APPLICATION = 'kmap_info_back.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-#DATABASES = {
-#    'default' : {
-#        'ENGINE'   : 'django.db.backends.mysql',
-#        'HOST'     : '203.255.181.89',
-#        'NAME'     : 'KMAP__INFO',
-#        'USER'     : 'kmapinfo',
-#        'PASSWORD' : 'kmapinfo@!',
-#        'PORT'     : '3307',
-#        'TEST'     :
-#            {
-#                'CHARSET'   : 'utfmb4',
-#                'COLLATION' : 'utf8mb4_general_ci',
-#            }
-#    }
-#}
-
 DATABASES = {
     'default' : {
         'ENGINE'   : 'django.db.backends.mysql',
-        'HOST'     : 'localhost',
+        'HOST'     : '203.255.181.89',
         'NAME'     : 'KMAP__INFO',
-        'USER'     : 'root',
-        'PASSWORD' : 'kaipharm1113',
-        'PORT'     : '3306',
+        'USER'     : 'kmapinfo',
+        'PASSWORD' : 'kmapinfo@!',
+        'PORT'     : '3307',
         'TEST'     :
             {
                 'CHARSET'   : 'utfmb4',
@@ -95,7 +79,6 @@ DATABASES = {
             }
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
