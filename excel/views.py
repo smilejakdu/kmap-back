@@ -259,8 +259,6 @@ def bar_get_week_of_month(year , month ,day):
 
 class StatisticsPage(View):
     def get(self, request):
-        print("StatisticsPage: 들어오나요")
-
         try:
 
             # circle
@@ -275,11 +273,11 @@ class StatisticsPage(View):
                      objects.
                      exclude(KaiChem_ID__in=["DMSO1","DMSO2" ,"Niclo1","Niclo2"]))
 
-            total_data_list                                                   = [[s.Library_Prep_date for s in sheet] ,
-                                                                                 [s.Sample_sending_date_LAS for s in sheet]]
+            sequencing_data = [s.Sequencing_Completed for s in sheet]
+            total_data_list = [[s.Library_Prep_date for s in sheet] ,
+                              [d for d in sequencing_data if d!='' or None]]
 
             result_columns_data , columns_labels , bar_result , new_data_json = [[],[]] ,[[],[]] , [[],[]] , [{},{}]
-            print(2)
             for tdl in range(0,len(total_data_list)):
                 new_data_list = []
 
@@ -326,7 +324,6 @@ class StatisticsPage(View):
                                 bar_result[index][columns_index] = new_data_json[index][str(year)][str(month)][week]
 
             columns_labels_data  = [f"{str(columns)[:4]}-{str(columns)[4:6]} {str(columns)[6:]}주" for columns in sorted(columns_labels_result)]
-
             while len(columns_labels_data) != 8:
                 if len(columns_labels_data) < 8:
                     columns_labels_data.insert(0,"")
@@ -334,12 +331,11 @@ class StatisticsPage(View):
                     columns_labels_data = columns_labels_data[-8:]
 
             for bar_index in range(0,len(bar_result)):
-                while len(columns_labels_data) != 8:
-                    if len(columns_labels_data) < 8:
+                while len(bar_result[bar_index]) != 8:
+                    if len(bar_result[bar_index]) < 8:
                         bar_result[bar_index].insert(0,0)
-                    elif len(columns_labels_data) > 8:
-                        bar_result[bar_index] = columns_labels_data[-8:]
-
+                    elif len(bar_result[bar_index]) > 8:
+                        bar_result[bar_index] = bar_result[bar_index][-8:]
             # svg
             svg_weeks_list       = [i for i in range(1 , 32)]
             svg_last_result_list = [[],[]]
