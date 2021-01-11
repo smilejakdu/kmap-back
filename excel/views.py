@@ -50,27 +50,50 @@ class ExcelView(View):
 
                 for num, values in enumerate(all_values):
                     if not num == 0:
-
-                        Sheet.objects.create(
-                            name                      = sheet,
-                            Subset                    = values[1],
-                            Compound_concentration_nM = values[2],
-                            Replicate                 = values[3],
-                            KaiChem_ID                = values[4],
-                            Compound_Name             = values[5],
-                            Compound_treatment_time   = values[6],
-                            Cell_line                 = values[7],
-                            Plate_ID                  = values[8],
-                            Well                      = values[9],
-                            Sample_ID                 = values[10],
-                            MGI_Index_No              = values[11],
-                            RNA_Extraction_date       = values[12],
-                            Library_Prep_date         = values[13],
-                            Sample_sending_date_LAS   = values[14],
-                            RNA_quantity_ng           = values[15],
-                            DNA_quantity_ng           = values[16],
-                            excel_name_id             = Excel.objects.get(name=excel_name).id
-                        )
+                        if values[15]:
+                            Sheet.objects.create(
+                                name                      = sheet,
+                                Subset                    = values[1],
+                                Compound_concentration_nM = values[2],
+                                Replicate                 = values[3],
+                                KaiChem_ID                = values[4],
+                                Compound_Name             = values[5],
+                                Compound_treatment_time   = values[6],
+                                Cell_line                 = values[7],
+                                Plate_ID                  = values[8],
+                                Well                      = values[9],
+                                Sample_ID                 = values[10],
+                                MGI_Index_No              = values[11],
+                                RNA_Extraction_date       = values[12],
+                                Library_Prep_date         = values[13],
+                                Sample_sending_date_LAS   = values[14],
+                                Sequencing_Completed      = values[15],
+                                RNA_quantity_ng           = values[16],
+                                DNA_quantity_ng           = values[17],
+                                excel_name_id             = Excel.objects.get(name=excel_name).id
+                            )
+                        else:
+                            Sheet.objects.create(
+                                name                      = sheet,
+                                Subset                    = values[1],
+                                Compound_concentration_nM = values[2],
+                                Replicate                 = values[3],
+                                KaiChem_ID                = values[4],
+                                Compound_Name             = values[5],
+                                Compound_treatment_time   = values[6],
+                                Cell_line                 = values[7],
+                                Plate_ID                  = values[8],
+                                Well                      = values[9],
+                                Sample_ID                 = values[10],
+                                MGI_Index_No              = values[11],
+                                RNA_Extraction_date       = values[12],
+                                Library_Prep_date         = values[13],
+                                Sample_sending_date_LAS   = values[14],
+                                Sequencing_Completed      = '',
+                                RNA_quantity_ng           = values[16],
+                                DNA_quantity_ng           = values[17],
+                                excel_name_id             = Excel.objects.get(name=excel_name).id
+                            )
 
             return HttpResponse(status=200)
 

@@ -27,6 +27,7 @@ class Sheet(models.Model):
     RNA_Extraction_date       = models.CharField(max_length = 150 , null = True)
     Library_Prep_date         = models.CharField(max_length = 150 , null = True)
     Sample_sending_date_LAS   = models.CharField(max_length = 250 , null = True)
+    Sequencing_Completed      = models.CharField(max_length = 250 , null = True)
     RNA_quantity_ng           = models.IntegerField(null = True)
     DNA_quantity_ng           = models.CharField(max_length = 250, null = True)
     excel_name                = models.ForeignKey("Excel" , on_delete = models.CASCADE , null=True)
