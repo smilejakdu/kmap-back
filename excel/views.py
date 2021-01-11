@@ -211,6 +211,7 @@ class SheetDetailView(View):
                                       "RNA_Extraction_date",
                                       "Library_Prep_date",
                                       "Sample_sending_date_LAS",
+                                      "Sequencing_Completed",
                                       "RNA_quantity_ng",
                                       "DNA_quantity_ng"))
 
