@@ -13,6 +13,7 @@ DATABASES = {
             }
     }
 }
+test
 SECRET_KEY = {
     'secret' :'62rn^x%z_&q=wpzyr$f_7l2h&_v1=(72nt$v)ih-*z2sf@peu$',
 }
