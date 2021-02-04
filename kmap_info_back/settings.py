@@ -1,5 +1,5 @@
 import os
-
+from .       import my_settings
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -8,9 +8,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = {
-    'secret' :'62rn^x%z_&q=wpzyr$f_7l2h&_v1=(72nt$v)ih-*z2sf@peu$',
-}
+SECRET_KEY = my_settings.SECRET_KEY['secret']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -63,21 +61,7 @@ WSGI_APPLICATION = 'kmap_info_back.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default' : {
-        'ENGINE'   : 'django.db.backends.mysql',
-        'HOST'     : '203.255.181.89',
-        'NAME'     : 'KMAP__INFO',
-        'USER'     : 'kmapinfo',
-        'PASSWORD' : 'kmapinfo@!',
-        'PORT'     : '3307',
-        'TEST'     :
-            {
-                'CHARSET'   : 'utfmb4',
-                'COLLATION' : 'utf8mb4_general_ci',
-            }
-    }
-}
+DATABASES = my_settings.DATABASES
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
