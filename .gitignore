@@ -8,6 +8,7 @@
 .envrc
 .idea/
 ### Django ###
+.my_settings.py
 *.log
 *.pot
 *.pyc
